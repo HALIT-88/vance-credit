@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vance Credit — Every point forward.</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        "primary-container": "#0f1c2c",
+        "primary-fixed": "#d6e4f9",
+        "secondary": "#2b6860",
+        "secondary-container": "#aeece1",
+        "secondary-fixed": "#b1eee4",
+        "on-secondary-container": "#095049",
+        "surface": "#f7f9fb",
+        "surface-container-low": "#f2f4f6",
+        "surface-container-lowest": "#ffffff",
+        "surface-container": "#eceef0",
+        "surface-container-high": "#e6e8ea",
+        "on-surface": "#191c1e",
+        "on-surface-variant": "#44474c",
+        "outline-variant": "#c4c6cc",
+        "error": "#ba1a1a",
+      },
+      fontFamily: {
+        serif: ["Noto Serif Display", "Georgia", "serif"],
+        body: ["Manrope", "sans-serif"],
+      },
+    }
+  }
+}
+</script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  /* ── BODY — Rich fixed gradient so glass blur is VISIBLE ── */
+  body {
+    font-family: 'Manrope', sans-serif;
+    color: #191c1e;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    background-color: #e8f4f1;
+    background-image:
+      radial-gradient(ellipse 90% 60% at 8% 10%, rgba(177,238,228,0.65) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 55% at 92% 88%, rgba(214,228,249,0.65) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 45% at 55% 50%, rgba(174,236,225,0.3) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 35% at 20% 75%, rgba(214,228,249,0.4) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  .serif { font-family: 'Noto Serif Display', Georgia, serif; }
+
+  /* ── SPA PAGES ─────────────────────────────────────────── */
+  .page { display: none; min-height: 100vh; flex-direction: column; }
+  .page.active { display: flex; }
+
+  /* ── WEALTH VEIL — Animated floating blobs ─────────────── */
+  .wealth-veil {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0; overflow: hidden; pointer-events: none;
+  }
+  /* Sections need z-index:1 to stay above wealth veil z-index:0 */
+  nav, section, .trust-bar-wrap, footer, .signup-wrap, .tools-wrap, .legal-wrap {
+    position: relative; z-index: 1;
+  }
+  .blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(70px);
+    will-change: transform;
+  }
+  .blob-1 {
+    width: 900px; height: 900px;
+    background: radial-gradient(circle, rgba(177,238,228,1) 0%, rgba(177,238,228,0) 70%);
+    opacity: 0.55; top: -20%; left: -15%;
+    animation: drift1 22s ease-in-out infinite;
+  }
+  .blob-2 {
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(214,228,249,1) 0%, rgba(214,228,249,0) 70%);
+    opacity: 0.5; bottom: -20%; right: -15%;
+    animation: drift2 26s ease-in-out infinite;
+  }
+  .blob-3 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(174,236,225,1) 0%, rgba(174,236,225,0) 70%);
+    opacity: 0.4; top: 45%; left: 35%;
+    animation: drift3 18s ease-in-out infinite;
+  }
+  .blob-4 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(214,228,249,1) 0%, rgba(214,228,249,0) 70%);
+    opacity: 0.35; top: 25%; right: 10%;
+    animation: drift1 20s ease-in-out infinite reverse;
+  }
+  @keyframes drift1 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    30%  { transform: translate(60px,-40px) scale(1.08); }
+    65%  { transform: translate(-30px, 50px) scale(0.94); }
+  }
+  @keyframes drift2 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    35%  { transform: translate(-50px, 40px) scale(1.06); }
+    70%  { transform: translate(40px,-55px) scale(0.96); }
+  }
+  @keyframes drift3 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    40%  { transform: translate(35px, 35px) scale(1.1); }
+    75%  { transform: translate(-45px,-25px) scale(0.92); }
+  }
+
+  /* ── GLASS SYSTEM — core classes ───────────────────────── */
+  .glass {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow: 0 8px 32px rgba(25,28,30,0.07), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .glass-dark {
+    background: rgba(15,28,44,0.75);
+    backdrop-filter: blur(28px) saturate(150%);
+    -webkit-backdrop-filter: blur(28px) saturate(150%);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .ghost-border { border: 1px solid rgba(255,255,255,0.5); }
+  .ambient-shadow { box-shadow: 0 20px 60px rgba(25,28,30,0.08); }
+  .specular-top {
+    box-shadow: 0 16px 48px rgba(25,28,30,0.08), inset 0 1.5px 0 rgba(255,255,255,0.95);
+  }
+
+  /* ── NAV ────────────────────────────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border-bottom: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 4px 24px rgba(25,28,30,0.06), inset 0 -1px 0 rgba(255,255,255,0.5);
+  }
+
+  /* ── BUTTONS ────────────────────────────────────────────── */
+  .btn-primary {
+    background: linear-gradient(135deg, #0f1c2c 0%, #2b6860 100%);
+    color: white;
+    transition: transform 0.22s cubic-bezier(0.22,1,0.36,1), box-shadow 0.22s;
+    box-shadow: 0 4px 20px rgba(15,28,44,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+    position: relative; overflow: hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 32px rgba(15,28,44,0.38); }
+  .btn-primary:hover::after { opacity: 1; }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .btn-glass {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.65);
+    transition: all 0.22s cubic-bezier(0.22,1,0.36,1);
+    box-shadow: 0 4px 16px rgba(25,28,30,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .btn-glass:hover {
+    background: rgba(255,255,255,0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(25,28,30,0.1), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  /* ── SCORE PILLS ─────────────────────────────────────────── */
+  .score-bad { background: rgba(254,242,242,0.9); color: #b91c1c; backdrop-filter: blur(8px); }
+  .score-good { background: rgba(209,250,229,0.9); color: #065f46; backdrop-filter: blur(8px); }
+
+  /* ── SECTION BACKGROUNDS — transparent to show blobs ────── */
+  .sec-light  { background: rgba(255,255,255,0.25); }
+  .sec-tinted { background: rgba(242,244,246,0.3); }
+  .sec-white  { background: rgba(255,255,255,0.35); }
+
+  /* ── SCROLL REVEAL ANIMATIONS ───────────────────────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                transform 0.75s cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-left {
+    opacity: 0; transform: translateX(-32px);
+    transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                transform 0.75s cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+  .reveal-right {
+    opacity: 0; transform: translateX(32px);
+    transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                transform 0.75s cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+  .reveal-scale {
+    opacity: 0; transform: scale(0.92);
+    transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                transform 0.75s cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+  /* Stagger delays */
+  .delay-1 { transition-delay: 0.08s !important; }
+  .delay-2 { transition-delay: 0.16s !important; }
+  .delay-3 { transition-delay: 0.24s !important; }
+  .delay-4 { transition-delay: 0.32s !important; }
+  .delay-5 { transition-delay: 0.4s !important; }
+
+  /* ── PAGE LOAD ANIMATIONS (hero) ─────────────────────────── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(43,104,96,0.3); }
+    70%  { box-shadow: 0 0 0 12px rgba(43,104,96,0); }
+    100% { box-shadow: 0 0 0 0 rgba(43,104,96,0); }
+  }
+  .animate-fadeInUp { animation: fadeInUp 0.7s cubic-bezier(0.22,1,0.36,1) forwards; }
+  .animate-fadeIn   { animation: fadeIn 0.5s ease forwards; }
+  .stagger-1 { animation-delay: 0.05s; opacity: 0; }
+  .stagger-2 { animation-delay: 0.15s; opacity: 0; }
+  .stagger-3 { animation-delay: 0.28s; opacity: 0; }
+  .stagger-4 { animation-delay: 0.42s; opacity: 0; }
+
+  /* ── HOVER LIFT — cards ──────────────────────────────────── */
+  .hover-lift {
+    transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
+                box-shadow 0.28s cubic-bezier(0.22,1,0.36,1);
+  }
+  .hover-lift:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 24px 60px rgba(25,28,30,0.14), inset 0 1px 0 rgba(255,255,255,0.9) !important;
+  }
+
+  /* ── FOOTER HOVER ────────────────────────────────────────── */
+  .hover-slide { display: inline-block; transition: transform 0.2s; }
+  .hover-slide:hover { transform: translateX(4px); }
+
+  /* ── GLASS CARD — tool cards ─────────────────────────────── */
+  .tool-glass {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow: 0 8px 40px rgba(25,28,30,0.07), inset 0 1.5px 0 rgba(255,255,255,0.95);
+    border-radius: 24px;
+    overflow: hidden;
+    transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), box-shadow 0.28s;
+  }
+  .tool-glass:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 24px 60px rgba(25,28,30,0.12), inset 0 1.5px 0 rgba(255,255,255,0.95);
+  }
+
+  /* ── FORM FIELDS — Glass Input ───────────────────────────── */
+  input, select, textarea {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px; font-weight: 500;
+    color: #191c1e; width: 100%;
+    padding: 13px 16px; border-radius: 12px;
+    border: 1.5px solid rgba(196,198,204,0.4);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    box-shadow: 0 2px 12px rgba(25,28,30,0.05), inset 0 1.5px 0 rgba(255,255,255,0.95);
+    transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+    appearance: none; -webkit-appearance: none; outline: none;
+  }
+  input::placeholder { color: #adb1b5; font-weight: 400; }
+  input:hover:not(:focus), select:hover:not(:focus) {
+    border-color: rgba(43,104,96,0.3);
+    box-shadow: 0 4px 16px rgba(25,28,30,0.07), inset 0 1.5px 0 rgba(255,255,255,0.95);
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: rgba(43,104,96,0.65);
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 0 0 4px rgba(43,104,96,0.1), 0 4px 20px rgba(43,104,96,0.12),
+                inset 0 1.5px 0 rgba(255,255,255,1);
+    transform: translateY(-1px);
+  }
+  input.err, select.err {
+    border-color: rgba(185,28,28,0.5);
+    background: rgba(254,242,242,0.8);
+    box-shadow: 0 0 0 4px rgba(185,28,28,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2344474c' stroke-width='2' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center;
+    padding-right: 40px; cursor: pointer;
+  }
+  .err-msg { font-size: 11px; color: #b91c1c; font-weight: 600; display: none; margin-top: 3px; }
+  .err-msg.show { display: block; animation: fadeIn 0.2s ease; }
+
+  /* ── CHECKBOX ────────────────────────────────────────────── */
+  .custom-check {
+    width: 20px; height: 20px; min-width: 20px;
+    border: 1.5px solid rgba(196,198,204,0.6);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(8px);
+    cursor: pointer; appearance: none; -webkit-appearance: none;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
+    flex-shrink: 0; margin-top: 2px;
+    box-shadow: 0 1px 4px rgba(25,28,30,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .custom-check:hover { border-color: rgba(43,104,96,0.5); box-shadow: 0 0 0 3px rgba(43,104,96,0.1); }
+  .custom-check:checked {
+    background: linear-gradient(135deg,#0f1c2c,#2b6860);
+    border-color: transparent;
+    box-shadow: 0 2px 10px rgba(15,28,44,0.35);
+  }
+  .custom-check:checked::after {
+    content: ''; display: block; width: 5px; height: 9px;
+    border: 2px solid white; border-top: none; border-left: none;
+    transform: rotate(45deg) translate(-1px,-1px);
+  }
+  .custom-check.sms:checked { background: linear-gradient(135deg,#2b6860,#095049); }
+  .custom-check.err-c { border-color: rgba(185,28,28,0.6); box-shadow: 0 0 0 3px rgba(185,28,28,0.1); }
+
+  /* ── CALC / DISPUTE ──────────────────────────────────────── */
+  .calc-result { display: none; }
+  .calc-result.show { display: block; animation: fadeIn 0.4s ease; }
+  .dti-bar-fill { height: 100%; border-radius: 4px; transition: width 0.9s cubic-bezier(0.22,1,0.36,1); }
+  .dc-chip {
+    transition: all 0.2s cubic-bezier(0.22,1,0.36,1); cursor: pointer;
+    background: rgba(255,255,255,0.6); backdrop-filter: blur(8px);
+  }
+  .dc-chip:hover {
+    border-color: rgba(15,28,44,0.4) !important;
+    background: rgba(214,228,249,0.55); transform: translateX(4px);
+  }
+  .dc-chip.selected {
+    border-color: rgba(43,104,96,0.65) !important;
+    background: rgba(177,238,228,0.5); transform: translateX(4px);
+  }
+  .factor-fill { height: 100%; border-radius: 4px; transition: width 1.4s cubic-bezier(0.22,1,0.36,1); }
+  .rate-tr { transition: background 0.15s; }
+  .rate-tr:hover { background: rgba(242,244,246,0.7); }
+  .score-transition { transition: all 0.3s; }
+
+  /* ── PAGE SWITCH ANIMATION ───────────────────────────────── */
+  @keyframes pageFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .page-enter { animation: pageFadeIn 0.4s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+  /* ── MOBILE ──────────────────────────────────────────────── */
+  .mobile-menu { display: none; }
+  .mobile-menu.open {
+    display: flex; flex-direction: column;
+    position: fixed; top: 66px; left: 0; right: 0;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(28px) saturate(180%);
+    padding: 20px; gap: 16px; z-index: 199;
+    border-bottom: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 0 16px 40px rgba(25,28,30,0.1);
+    animation: fadeInUp 0.3s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  @media (max-width: 768px) {
+    .desktop-nav { display: none; }
+    .math-hero-card { display: none; }
+    .signup-grid { grid-template-columns: 1fr !important; }
+    .grid-two { grid-template-columns: 1fr !important; }
+  }
+  @media (max-width: 640px) {
+    .field-row-two { grid-template-columns: 1fr !important; }
+  }
+  @media (min-width: 769px) {
+    .sticky-form { position: sticky; top: 80px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ WEALTH VEIL ═══════════════════════ -->
+<div class="wealth-veil">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+
+<!-- ═══════════════════════ NAV ═══════════════════════ -->
+<nav class="glass ambient-shadow w-full" style="position:sticky;top:0;z-index:100;">
+  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+    <!-- Logo -->
+    <button onclick="showPage('home')" class="flex items-center gap-2 group">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg" style="background:linear-gradient(135deg,#0f1c2c,#2b6860)">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M4 14L10 4L16 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="6" y1="10" x2="14" y2="10" stroke="#b1eee4" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </div>
+      <span class="serif text-lg font-bold italic text-primary-container group-hover:scale-105 transition-transform duration-300" style="color:#0f1c2c">Vance Credit</span>
+    </button>
+    <!-- Desktop links -->
+    <div class="desktop-nav hidden md:flex items-center gap-8">
+      <button onclick="showPage('home');doScroll('#cost')" class="text-sm font-medium text-on-surface-variant hover:text-primary-container transition-colors hover:scale-105 transition-transform duration-300" style="color:#44474c">The Cost</button>
+      <button onclick="showPage('home');doScroll('#guarantee')" class="text-sm font-medium text-on-surface-variant hover:text-primary-container transition-colors hover:scale-105 transition-transform duration-300" style="color:#44474c">Guarantee</button>
+      <button onclick="showPage('home');doScroll('#pricing')" class="text-sm font-medium text-on-surface-variant hover:text-primary-container transition-colors hover:scale-105 transition-transform duration-300" style="color:#44474c">Pricing</button>
+      <button onclick="showPage('home');doScroll('#faq')" class="text-sm font-medium text-on-surface-variant hover:text-primary-container transition-colors hover:scale-105 transition-transform duration-300" style="color:#44474c">FAQ</button>
+      <button onclick="showPage('tools')" class="text-sm font-medium hover:scale-105 transition-transform duration-300" style="color:#2b6860;font-weight:600">Tools</button>
+    </div>
+    <!-- CTA -->
+    <div class="flex items-center gap-3">
+      <button onclick="showPage('signup')" class="btn-primary text-sm font-bold px-5 py-2.5 rounded-full shadow-lg">See what's holding you back →</button>
+      <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-surface-container-low transition-colors">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button onclick="showPage('home');doScroll('#cost');closeMobileMenu()" class="text-left py-2 font-medium text-on-surface-variant border-b border-outline-variant/20 pb-3" style="color:#44474c">The Cost</button>
+    <button onclick="showPage('home');doScroll('#guarantee');closeMobileMenu()" class="text-left py-2 font-medium text-on-surface-variant border-b border-outline-variant/20 pb-3" style="color:#44474c">Guarantee</button>
+    <button onclick="showPage('home');doScroll('#pricing');closeMobileMenu()" class="text-left py-2 font-medium text-on-surface-variant border-b border-outline-variant/20 pb-3" style="color:#44474c">Pricing</button>
+    <button onclick="showPage('home');doScroll('#faq');closeMobileMenu()" class="text-left py-2 font-medium text-on-surface-variant border-b border-outline-variant/20 pb-3" style="color:#44474c">FAQ</button>
+    <button onclick="showPage('tools');closeMobileMenu()" class="text-left py-2 font-semibold" style="color:#2b6860">Tools</button>
+    <button onclick="showPage('signup');closeMobileMenu()" class="btn-primary w-full py-3 rounded-full font-bold mt-2">Start for $1 →</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE: HOME
+═══════════════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active" style="flex-direction:column">
+
+<!-- HERO -->
+<section class="relative pt-24 pb-28 px-6" style="overflow:visible">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+    <!-- Left -->
+    <div class="space-y-8">
+      <div class="animate-fadeInUp stagger-1">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest" style="background:#aeece1;color:#095049">
+          Credit Repair Organization · CROA Compliant · 15 U.S.C. § 1679
+        </span>
+      </div>
+      <h1 class="serif text-5xl md:text-7xl font-bold leading-tight animate-fadeInUp stagger-2" style="color:#191c1e">
+        Bad credit costs you <span class="italic" style="text-decoration:underline;text-decoration-color:#2b6860">thousands.</span><br>We work first.
+      </h1>
+      <p class="text-xl animate-fadeInUp stagger-3 max-w-xl" style="color:#44474c">
+        You don't pay us a dollar until after we've submitted disputes on your file. No setup fees. No advance charges. No exceptions. That's federal law, and it's how we've built everything.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 pt-2 animate-fadeInUp stagger-4">
+        <button onclick="showPage('signup')" class="btn-primary px-10 py-5 rounded-xl font-bold text-lg shadow-2xl flex items-center justify-center gap-3">
+          See what's holding you back — $1
+          <span class="material-symbols-outlined text-xl">arrow_forward</span>
+        </button>
+        <button onclick="doScroll('#cost')" class="btn-glass px-10 py-5 rounded-xl font-bold text-lg" style="color:#0f1c2c">
+          See the real cost
+        </button>
+      </div>
+      <div class="space-y-3 animate-fadeInUp stagger-4">
+        <div class="flex items-center gap-3 text-sm" style="color:#44474c"><span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#2b6860"></span>Federal law prohibits advance fees — we've built our entire business around this</div>
+        <div class="flex items-center gap-3 text-sm" style="color:#44474c"><span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#2b6860"></span>You see every dispute in your portal before you see any invoice</div>
+        <div class="flex items-center gap-3 text-sm" style="color:#44474c"><span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#2b6860"></span>6-Month Service Guarantee — no documented activity, full refund + 6 months free</div>
+        <div class="flex items-center gap-3 text-sm" style="color:#44474c"><span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#2b6860"></span>3-day cancellation right by law — no questions, no fees</div>
+      </div>
+    </div>
+    <!-- Right: Math Card -->
+    <!-- Right: Math Card -->
+    <div class="math-hero-card animate-fadeInUp stagger-3" style="position:relative;padding-bottom:60px">
+      <!-- Main card — z-index:1 keeps it above the decorative element -->
+      <div class="glass specular-top rounded-3xl overflow-hidden" style="position:relative;z-index:1">
+        <div style="position:absolute;top:0;right:0;padding:16px;z-index:2;pointer-events:none">
+          <span class="material-symbols-outlined" style="font-size:48px;color:#2b6860;opacity:0.25">calculate</span>
+        </div>
+        <div style="background:linear-gradient(135deg,#0f1c2c,#2b6860);padding:22px 28px">
+          <p style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85)">What your credit score costs you on a $30,000 auto loan</p>
+          <p style="font-size:11px;margin-top:4px;color:rgba(255,255,255,0.45)">60-month term · Illustrative example · Your terms vary</p>
+        </div>
+        <div style="padding:28px">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+            <div class="score-bad serif" style="padding:8px 18px;border-radius:14px;font-size:42px;font-weight:700;line-height:1">541</div>
+            <span style="font-size:22px;color:#9ca3af">→</span>
+            <div class="score-good serif" style="padding:8px 18px;border-radius:14px;font-size:42px;font-weight:700;line-height:1">680+</div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;border-bottom:1px solid rgba(25,28,30,0.07)"><span style="color:#44474c">Score range</span><span style="display:flex;gap:24px"><span style="font-weight:700;color:#b91c1c">~541</span><span style="font-weight:700;color:#065f46">~680+</span></span></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;border-bottom:1px solid rgba(25,28,30,0.07)"><span style="color:#44474c">Typical APR range</span><span style="display:flex;gap:24px"><span style="font-weight:700;color:#b91c1c">~18–22%</span><span style="font-weight:700;color:#065f46">~6–8%</span></span></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;border-bottom:1px solid rgba(25,28,30,0.07)"><span style="color:#44474c">Monthly payment</span><span style="display:flex;gap:24px"><span style="font-weight:700;color:#b91c1c">~$760</span><span style="font-weight:700;color:#065f46">~$585</span></span></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;border-bottom:1px solid rgba(25,28,30,0.07)"><span style="color:#44474c">Total over 60 months</span><span style="display:flex;gap:24px"><span style="font-weight:700;color:#b91c1c">~$45,600</span><span style="font-weight:700;color:#065f46">~$35,100</span></span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:12px;margin-top:8px;background:#b1eee4">
+              <span style="font-weight:600;color:#095049">Extra cost of bad credit</span>
+              <span style="font-size:17px;font-weight:700;color:#095049">~$10,500</span>
+            </div>
+          </div>
+          <p style="font-size:11px;margin-top:16px;line-height:1.6;color:#9ca3af">Rate ranges are illustrative estimates. Your actual rates depend on lender, loan type, down payment, and other factors.</p>
+        </div>
+      </div>
+      <!-- Decorative element — z-index:0 so it ALWAYS stays behind the card -->
+      <div class="hidden md:block" style="position:absolute;bottom:0;left:-20px;width:140px;height:140px;border-radius:20px;overflow:hidden;box-shadow:0 20px 50px rgba(15,28,44,0.3);transform:rotate(3deg);z-index:0">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#0f1c2c 0%,#2b6860 100%);display:flex;align-items:center;justify-content:center">
+          <span class="material-symbols-outlined" style="font-size:56px;color:rgba(255,255,255,0.18)">account_balance</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div style="background:#0f1c2c">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-center flex-wrap gap-0">
+    <div class="flex items-center gap-2 text-xs font-medium px-4 py-1" style="color:rgba(255,255,255,0.7);border-right:1px solid rgba(255,255,255,0.12)"><span class="material-symbols-outlined text-sm" style="color:#b1eee4">check_circle</span>We work before you pay — always</div>
+    <div class="flex items-center gap-2 text-xs font-medium px-4 py-1" style="color:rgba(255,255,255,0.7);border-right:1px solid rgba(255,255,255,0.12)"><span class="material-symbols-outlined text-sm" style="color:#b1eee4">check_circle</span>No setup fees. Not ever.</div>
+    <div class="flex items-center gap-2 text-xs font-medium px-4 py-1" style="color:rgba(255,255,255,0.7);border-right:1px solid rgba(255,255,255,0.12)"><span class="material-symbols-outlined text-sm" style="color:#b1eee4">check_circle</span>6-Month Service Guarantee</div>
+    <div class="flex items-center gap-2 text-xs font-medium px-4 py-1" style="color:rgba(255,255,255,0.7);border-right:1px solid rgba(255,255,255,0.12)"><span class="material-symbols-outlined text-sm" style="color:#b1eee4">check_circle</span>3-day right to cancel by federal law</div>
+    <div class="flex items-center gap-2 text-xs font-medium px-4 py-1" style="color:rgba(255,255,255,0.7)"><span class="material-symbols-outlined text-sm" style="color:#b1eee4">check_circle</span>CROA compliant · 15 U.S.C. § 1679</div>
+  </div>
+</div>
+
+<!-- COST SECTION -->
+<section id="cost" class="py-24 px-6" style="background:rgba(255,255,255,0.22)">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+    <div>
+      <p class="text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2 reveal" style="color:#2b6860"><span class="inline-block w-7 h-0.5" style="background:#2b6860"></span>The math nobody shows you</p>
+      <h2 class="serif text-4xl md:text-5xl font-bold leading-tight mb-6" style="color:#191c1e">A lower credit score doesn't just feel bad.<br><span style="color:#0f1c2c">It costs you real money. Every month.</span></h2>
+      <p class="text-base leading-relaxed mb-4" style="color:#44474c">Every loan you take out — car, home, business — comes with an interest rate directly tied to your credit score. The lower the score, the higher the rate. The difference between a 541 and a 680 on a $30,000 car loan can cost you over $10,000 across the life of the loan.</p>
+      <p class="text-base leading-relaxed mb-8" style="color:#44474c">Vance Credit costs $97 a month. That's the math. If inaccurate items on your report are holding your score back, the cost of not addressing them is almost always greater than the cost of addressing them.</p>
+      <button onclick="showPage('signup')" class="btn-primary px-8 py-4 rounded-xl font-bold text-base flex items-center gap-2">
+        See what's in your file — $1 to start
+        <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </button>
+      <p class="text-xs mt-3" style="color:#9ca3af">No commitment until you decide to enroll. Rates are illustrative.</p>
+    </div>
+    <div class="space-y-4">
+      <div class="rounded-2xl p-6 relative overflow-hidden" style="background:rgba(255,255,255,0.5);backdrop-filter:blur(16px);border-left:4px solid #b91c1c;border-top:1px solid rgba(255,255,255,0.7);box-shadow:0 4px 20px rgba(25,28,30,0.06)">
+        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#b91c1c">Score around 541 — subprime range</p>
+        <p class="serif text-3xl font-bold mb-2" style="color:#191c1e">~$760/month</p>
+        <p class="text-sm" style="color:#44474c">$30,000 auto loan at ~20% APR (typical subprime range) over 60 months</p>
+        <p class="text-xl font-bold mt-2" style="color:#b91c1c">~$45,600 total paid</p>
+      </div>
+      <div class="rounded-2xl p-6 relative overflow-hidden" style="background:rgba(255,255,255,0.5);backdrop-filter:blur(16px);border-left:4px solid #2b6860;border-top:1px solid rgba(255,255,255,0.7);box-shadow:0 4px 20px rgba(25,28,30,0.06)">
+        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Score around 680+ — near-prime range</p>
+        <p class="serif text-3xl font-bold mb-2" style="color:#191c1e">~$585/month</p>
+        <p class="text-sm" style="color:#44474c">Same $30,000 loan at ~7% APR (typical near-prime range) over 60 months</p>
+        <p class="text-xl font-bold mt-2" style="color:#2b6860">~$35,100 total paid</p>
+      </div>
+      <div class="rounded-2xl p-6 flex items-center gap-5" style="background:#b1eee4">
+        <p class="serif text-4xl font-bold flex-shrink-0" style="color:#095049">~$10,500</p>
+        <p class="text-sm leading-relaxed" style="color:#095049">extra cost of a lower score on a single auto loan. Multiply that across a mortgage, a business loan, a second car.</p>
+      </div>
+      <p class="text-xs leading-relaxed" style="color:#9ca3af">Rate ranges are illustrative estimates based on publicly available market data and vary significantly by lender, loan type, down payment, geography, and individual circumstances.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GOAL TRACKS -->
+<section id="tracks" class="py-24 px-6" style="background:rgba(242,244,246,0.25)">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 space-y-4">
+      <p class="text-xs font-bold uppercase tracking-widest" style="color:#2b6860">Goal tracks</p>
+      <h2 class="serif text-4xl md:text-5xl font-bold" style="color:#191c1e">What are you trying to get approved for?</h2>
+      <p class="text-lg max-w-2xl mx-auto" style="color:#44474c">Your dispute strategy is built around your actual goal. Auto lenders and mortgage underwriters look at different items. We optimize for your specific finish line.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="rounded-3xl p-10 relative hover-lift reveal group" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.7);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 32px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)">
+        <div class="h-1 w-10 rounded mb-6" style="background:#0f1c2c"></div>
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform duration-300" style="background:#d6e4f9">
+          <span class="material-symbols-outlined text-3xl" style="color:#0f1c2c">directions_car</span>
+        </div>
+        <h3 class="serif text-2xl font-bold mb-4" style="color:#191c1e">Auto Approved</h3>
+        <p class="text-sm leading-relaxed mb-4" style="color:#44474c">Declined on a car loan or know your score isn't there yet. We target the items auto lenders weight most heavily — collections, charge-offs, late payments reported in error.</p>
+        <span class="inline-block text-xs font-bold px-3 py-1.5 rounded-lg mb-4" style="background:#d6e4f9;color:#0f1c2c">Lenders typically look for 620–640+ · varies by lender</span>
+        <p class="text-xs pt-4" style="color:#44474c;border-top:1px solid rgba(25,28,30,0.07)">→ Return-to-dealer coordination when you reach your target range</p>
+      </div>
+      <div class="rounded-3xl p-10 relative hover-lift reveal group overflow-hidden" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.7);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 32px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)">
+        <div class="absolute top-0 left-0 right-0 h-1" style="background:#2b6860"></div>
+        <div class="h-1 w-10 rounded mb-6" style="background:#2b6860"></div>
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform duration-300" style="background:#b1eee4">
+          <span class="material-symbols-outlined text-3xl" style="color:#1a4039">home_work</span>
+        </div>
+        <h3 class="serif text-2xl font-bold mb-4" style="color:#191c1e">Home Approved</h3>
+        <p class="text-sm leading-relaxed mb-4" style="color:#44474c">Mortgage underwriters look at specific patterns — payment history, utilization, specific derogatory items. We focus the dispute strategy on what mortgage lenders actually flag.</p>
+        <span class="inline-block text-xs font-bold px-3 py-1.5 rounded-lg mb-4" style="background:#b1eee4;color:#095049">FHA typically 580+ · Conventional typically 620+ · varies by lender</span>
+        <p class="text-xs pt-4" style="color:#44474c;border-top:1px solid rgba(25,28,30,0.07)">→ Milestone report formatted for your loan officer at qualification</p>
+        <a class="flex items-center gap-2 font-bold mt-3 group-hover:gap-4 transition-all text-sm" style="color:#2b6860">Explore Track <span class="material-symbols-outlined text-base">trending_flat</span></a>
+      </div>
+      <div class="rounded-3xl p-10 relative hover-lift reveal group" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.7);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 32px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)">
+        <div class="h-1 w-10 rounded mb-6" style="background:#534AB7"></div>
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform duration-300" style="background:#EEEDFE">
+          <span class="material-symbols-outlined text-3xl" style="color:#534AB7">business_center</span>
+        </div>
+        <h3 class="serif text-2xl font-bold mb-4" style="color:#191c1e">Business Funded</h3>
+        <p class="text-sm leading-relaxed mb-4" style="color:#44474c">Business credit and personal credit are separate systems. Most entrepreneurs don't know they may not have a business credit profile. We build both simultaneously.</p>
+        <span class="inline-block text-xs font-bold px-3 py-1.5 rounded-lg mb-4" style="background:#EEEDFE;color:#534AB7">Many SBA programs prefer 680+ personal + active business credit profile</span>
+        <p class="text-xs pt-4" style="color:#44474c;border-top:1px solid rgba(25,28,30,0.07)">→ D-U-N-S setup, SBA readiness, business credit card qualification roadmap</p>
+      </div>
+    </div>
+    <p class="text-xs text-center mt-8 max-w-3xl mx-auto leading-relaxed" style="color:#9ca3af">Score thresholds are typical lender benchmarks — they vary by lender, loan program, down payment, and individual financial profile. Vance Credit does not guarantee loan approval, specific score changes, or that reaching any threshold will result in credit approval. Individual results vary.</p>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<section id="guarantee" class="py-24 px-6" style="background:#0f1c2c;position:relative;overflow:hidden">
+  <div style="position:absolute;inset:0;overflow:hidden;z-index:0">
+    <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:#2b6860;opacity:0.15;filter:blur(80px);top:-20%;right:-10%"></div>
+    <div style="position:absolute;width:400px;height:400px;border-radius:50%;background:#d6e4f9;opacity:0.08;filter:blur(80px);bottom:-10%;left:-5%"></div>
+  </div>
+  <div class="max-w-7xl mx-auto relative" style="z-index:1">
+    <p class="text-center text-xs font-bold uppercase tracking-widest mb-5" style="color:rgba(255,255,255,0.4)">The Vance Guarantee</p>
+    <h2 class="serif text-4xl md:text-6xl font-bold text-center leading-tight mb-6 text-white">The promise nobody in this industry<br>will <span class="italic" style="color:#b1eee4">say out loud.</span></h2>
+    <p class="text-center text-lg mb-16 max-w-xl mx-auto" style="color:rgba(255,255,255,0.55)">We guarantee what we control. We won't claim to control what we don't. That honesty is rarer than it should be.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
+      <div class="p-7 rounded-2xl" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px)">
+        <p class="serif text-4xl font-bold mb-4" style="color:#b1eee4">01</p>
+        <p class="font-bold text-white mb-3">The Work Guarantee</p>
+        <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,0.5)">Everything the FCRA legally allows — or you don't pay. Our effort is guaranteed.</p>
+      </div>
+      <div class="p-7 rounded-2xl" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px)">
+        <p class="serif text-4xl font-bold mb-4" style="color:#b1eee4">02</p>
+        <p class="font-bold text-white mb-3">No Work, No Pay</p>
+        <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,0.5)">Disputes in your portal before any invoice. Every billing cycle. No exceptions.</p>
+      </div>
+      <div class="p-7 rounded-2xl" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px)">
+        <p class="serif text-4xl font-bold mb-4" style="color:#b1eee4">03</p>
+        <p class="font-bold text-white mb-3">Open File Promise</p>
+        <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,0.5)">Real-time portal access. Every dispute. Every bureau response. Nothing hidden.</p>
+      </div>
+      <div class="p-7 rounded-2xl" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px)">
+        <p class="serif text-4xl font-bold mb-4" style="color:#b1eee4">04</p>
+        <p class="font-bold text-white mb-3">30-Day Activity</p>
+        <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,0.5)">Disputes submitted within 30 days of enrollment — or full refund.</p>
+      </div>
+    </div>
+    <div class="rounded-2xl p-12 text-center mb-8" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);backdrop-filter:blur(20px)">
+      <p class="text-xs font-bold uppercase tracking-widest mb-5" style="color:#b1eee4">The 6-Month Service Guarantee</p>
+      <p class="serif text-2xl md:text-3xl italic text-white leading-relaxed mb-8 max-w-3xl mx-auto">"If after 6 months of active enrollment we have not submitted documented dispute activity on your credit file, we refund every dollar you paid us — and work your file for another 6 months at no charge."</p>
+      <button onclick="showPage('signup')" class="inline-flex items-center gap-3 px-10 py-4 rounded-full font-bold text-white shadow-xl transition-all hover:scale-105" style="background:#2b6860;box-shadow:0 4px 20px rgba(43,104,96,0.4)">
+        Start with $1 — see what's in your file
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+    </div>
+    <p class="text-xs text-center max-w-2xl mx-auto leading-relaxed" style="color:rgba(255,255,255,0.28)">This guarantee covers our documented effort and dispute submissions — not how credit bureaus respond or what your score does. No legitimate credit repair company can guarantee score outcomes, and any that claim to are violating federal law. Conditions: active credit monitoring maintained throughout; client does not take actions that materially damage the file during the service period. Full terms stated in your written contract before you sign anything.</p>
+  </div>
+</section>
+
+<!-- CLIENT OUTCOMES -->
+<section id="proof" class="py-24 px-6" style="background:rgba(242,244,246,0.25)">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 space-y-4">
+      <p class="text-xs font-bold uppercase tracking-widest" style="color:#2b6860">Client outcomes</p>
+      <h2 class="serif text-4xl md:text-5xl font-bold" style="color:#191c1e">Real files. Real dispute work. Real results.</h2>
+      <p class="text-lg max-w-xl mx-auto" style="color:#44474c">These are documented outcomes from real Vance Credit clients. Individual results vary significantly. These are not typical results.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <div class="rounded-3xl overflow-hidden hover-lift reveal" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 32px rgba(25,28,30,0.07),inset 0 1px 0 rgba(255,255,255,0.9)">
+        <div class="flex items-center gap-4 p-6" style="border-bottom:1px solid rgba(25,28,30,0.07)">
+          <div class="score-bad px-3 py-2 rounded-xl serif text-3xl font-bold">541</div>
+          <span class="text-xl" style="color:#9ca3af">→</span>
+          <div class="score-good px-3 py-2 rounded-xl serif text-3xl font-bold">623</div>
+        </div>
+        <div class="p-6">
+          <span class="inline-block text-xs font-bold px-2 py-1 rounded mb-4" style="background:#d6e4f9;color:#0f1c2c">Auto Track</span>
+          <div class="space-y-2 mb-4">
+            <div class="flex items-start gap-2 text-sm" style="color:#44474c"><span class="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5" style="background:#b1eee4;color:#095049">✓</span>Medical collection $340 — deletion confirmed, Equifax</div>
+            <div class="flex items-start gap-2 text-sm" style="color:#44474c"><span class="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5" style="background:#b1eee4;color:#095049">✓</span>Late payment reported in error — correction confirmed, Experian</div>
+            <div class="flex items-start gap-2 text-sm" style="color:#44474c"><span class="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5" style="background:#b1eee4;color:#095049">✓</span>Duplicate account — deletion confirmed, TransUnion</div>
+          </div>
+          <p class="text-sm italic leading-relaxed mb-2 pt-4" style="color:#44474c;border-top:1px solid rgba(25,28,30,0.07)">"I didn't believe it until I saw the deletions in my portal. Then I went back to the same dealer."</p>
+          <p class="text-xs" style="color:#9ca3af">Marcus T. — Houston, TX · 4 months of documented dispute activity</p>
+        </div>
+      </div>
+      <div class="rounded-3xl overflow-hidden hover-lift reveal" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 32px rgba(25,28,30,0.07),inset 0 1px 0 rgba(255,255,255,0.9)">
+        <div class="flex items-center gap-4 p-6" style="border-bottom:1px solid rgba(25,28,30,0.07)">
+          <div class="score-bad px-3 py-2 rounded-xl serif text-3xl font-bold">578</div>
+          <span class="text-xl" style="color:#9ca3af">→</span>
+          <div class="score-good px-3 py-2 rounded-xl serif text-3xl font-bold">641</div>
+        </div>
+        <div class="p-6">
+          <span class="inline-block text-xs font-bold px-2 py-1 rounded mb-4" style="background:#b1eee4;color:#095049">Home Track</span>
+          <div class="space-y-2 mb-4">
+            <div class="flex items-start gap-2 text-sm" style="color:#44474c"><span class="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5" style="background:#b1eee4;color:#095049">✓</span>Medical collection — deletion confirmed, all 3 bureaus</div>
+            <div class="flex items-start gap-2 text-sm" style="color:#44474c"><span class="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5" style="background:#b1eee4;color:#095049">✓</span>Collection balance reported incorrectly — correction confirmed</div>
+            <div class="flex items-start gap-2 text-sm" style="color:#44474c"><span class="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5" style="background:#b1eee4;color:#095049">✓</span>Unauthorized inquiry — removed, Experian</div>
+          </div>
+          <p class="text-sm italic leading-relaxed mb-2 pt-4" style="color:#44474c;border-top:1px solid rgba(25,28,30,0.07)">"My loan officer said I needed 620. Vance got me to 641. We closed 6 weeks later."</p>
+          <p class="text-xs" style="color:#9ca3af">Danielle M. — Charlotte, NC · 5 months of documented dispute activity</p>
+        </div>
+      </div>
+      <div class="rounded-3xl overflow-hidden hover-lift reveal" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 32px rgba(25,28,30,0.07),inset 0 1px 0 rgba(255,255,255,0.9)">
+        <div class="flex items-center gap-4 p-6" style="border-bottom:1px solid rgba(25,28,30,0.07)">
+          <div class="score-bad px-3 py-2 rounded-xl serif text-3xl font-bold">562</div>
+          <span class="text-xl" style="color:#9ca3af">→</span>
+          <div class="score-good px-3 py-2 rounded-xl serif text-3xl font-bold">694</div>
+        </div>
+        <div class="p-6">
+          <span class="inline-block text-xs font-bold px-2 py-1 rounded mb-4" style="background:#EEEDFE;color:#534AB7">Business Track</span>
+          <div class="space-y-2 mb-4">
+            <div class="flex items-start gap-2 text-sm" style="color:#44474c"><span class="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5" style="background:#b1eee4;color:#095049">✓</span>2 charge-offs with wrong dates — corrections confirmed</div>
+            <div class="flex items-start gap-2 text-sm" style="color:#44474c"><span class="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5" style="background:#b1eee4;color:#095049">✓</span>Paid collection still reporting — deletion confirmed</div>
+            <div class="flex items-start gap-2 text-sm" style="color:#44474c"><span class="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5" style="background:#b1eee4;color:#095049">✓</span>Business credit profile established — D-U-N-S + Net-30 vendors</div>
+          </div>
+          <p class="text-sm italic leading-relaxed mb-2 pt-4" style="color:#44474c;border-top:1px solid rgba(25,28,30,0.07)">"Had zero business credit. Vance built my Dun &amp; Bradstreet profile while disputing my personal file at the same time."</p>
+          <p class="text-xs" style="color:#9ca3af">James R. — Atlanta, GA · 7 months of documented dispute activity</p>
+        </div>
+      </div>
+    </div>
+    <div class="rounded-2xl p-5 text-center max-w-2xl mx-auto text-sm" style="color:#9ca3af;background:rgba(255,255,255,0.7);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.5)">Results shown are from specific clients with specific files. Individual outcomes vary significantly. FTC disclosure: these clients have not been compensated. Results are not typical.</div>
+  </div>
+</section>
+
+<!-- WHAT WE DISPUTE -->
+<section id="what-we-dispute" class="py-24 px-6" style="background:rgba(255,255,255,0.22)">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16 space-y-4">
+      <p class="text-xs font-bold uppercase tracking-widest" style="color:#2b6860">What we dispute</p>
+      <h2 class="serif text-4xl md:text-5xl font-bold" style="color:#191c1e">We tell you exactly what we can — and can't — do.</h2>
+      <p class="text-lg max-w-xl mx-auto" style="color:#44474c">No credit repair company can legally remove accurate, verified information. Any company that tells you otherwise is violating federal law.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div>
+        <div class="flex items-center gap-2 font-bold mb-5 pb-3" style="color:#095049;border-bottom:2px solid #2b6860">
+          <span class="material-symbols-outlined text-xl">verified</span> We dispute these
+        </div>
+        <div class="space-y-3">
+          <div class="flex gap-3 p-4 rounded-xl" style="background:#b1eee4"><span class="text-xl">🏥</span><div><p class="font-semibold text-sm" style="color:#191c1e">Medical collections — especially under $500</p><p class="text-xs mt-1" style="color:#44474c">New CFPB rules significantly limit reporting of medical debt.</p></div></div>
+          <div class="flex gap-3 p-4 rounded-xl" style="background:#b1eee4"><span class="text-xl">⚠️</span><div><p class="font-semibold text-sm" style="color:#191c1e">Late payments reported in error</p><p class="text-xs mt-1" style="color:#44474c">Payments marked late that were actually on-time. Documented with bank records.</p></div></div>
+          <div class="flex gap-3 p-4 rounded-xl" style="background:#b1eee4"><span class="text-xl">👤</span><div><p class="font-semibold text-sm" style="color:#191c1e">Accounts you don't recognize</p><p class="text-xs mt-1" style="color:#44474c">Possible identity theft, mixed file, or administrative error.</p></div></div>
+          <div class="flex gap-3 p-4 rounded-xl" style="background:#b1eee4"><span class="text-xl">📋</span><div><p class="font-semibold text-sm" style="color:#191c1e">Duplicate tradelines</p><p class="text-xs mt-1" style="color:#44474c">Same debt showing twice from different collection agencies.</p></div></div>
+          <div class="flex gap-3 p-4 rounded-xl" style="background:#b1eee4"><span class="text-xl">📅</span><div><p class="font-semibold text-sm" style="color:#191c1e">Items past the 7-year reporting limit</p><p class="text-xs mt-1" style="color:#44474c">Most negative items must be removed after 7 years under the FCRA.</p></div></div>
+          <div class="flex gap-3 p-4 rounded-xl" style="background:#b1eee4"><span class="text-xl">🔍</span><div><p class="font-semibold text-sm" style="color:#191c1e">Unauthorized hard inquiries</p><p class="text-xs mt-1" style="color:#44474c">Inquiries you didn't authorize or that resulted from identity theft.</p></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center gap-2 font-bold mb-5 pb-3" style="color:#b91c1c;border-bottom:2px solid #b91c1c">
+          <span class="material-symbols-outlined text-xl">cancel</span> We cannot remove these
+        </div>
+        <div class="space-y-3">
+          <div class="flex gap-3 p-4 rounded-xl" style="background:#fef2f2"><span class="text-xl">⚖️</span><div><p class="font-semibold text-sm" style="color:#191c1e">Accurate, verified bankruptcies</p><p class="text-xs mt-1" style="color:#44474c">Verified public records cannot be legally removed before their reporting window ends.</p></div></div>
+          <div class="flex gap-3 p-4 rounded-xl" style="background:#fef2f2"><span class="text-xl">💳</span><div><p class="font-semibold text-sm" style="color:#191c1e">Late payments you know happened</p><p class="text-xs mt-1" style="color:#44474c">Disputing accurate information is a violation of federal law — and it doesn't work.</p></div></div>
+          <div class="flex gap-3 p-4 rounded-xl" style="background:#fef2f2"><span class="text-xl">📊</span><div><p class="font-semibold text-sm" style="color:#191c1e">Accurate charge-offs or repossessions</p><p class="text-xs mt-1" style="color:#44474c">If it happened and the creditor can verify it, it stays.</p></div></div>
+          <div class="flex gap-3 p-4 rounded-xl" style="background:#fef2f2"><span class="text-xl">💼</span><div><p class="font-semibold text-sm" style="color:#191c1e">Current high utilization</p><p class="text-xs mt-1" style="color:#44474c">Utilization isn't a tradeline — it reflects your current balance. Pay it down.</p></div></div>
+          <div class="flex gap-3 p-4 rounded-xl" style="background:#fef2f2"><span class="text-xl">🏦</span><div><p class="font-semibold text-sm" style="color:#191c1e">Recent accurate collections</p><p class="text-xs mt-1" style="color:#44474c">Within the 7-year window, verified, accurate — stays on the report.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="py-24 px-6" style="background:#0f1c2c">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 space-y-4">
+      <p class="text-xs font-bold uppercase tracking-widest" style="color:rgba(255,255,255,0.4)">Pricing</p>
+      <h2 class="serif text-4xl md:text-5xl font-bold text-white">Investment in your future.</h2>
+      <p class="text-lg max-w-xl mx-auto" style="color:rgba(255,255,255,0.55)">No advance charges. Every plan bills only after work is documented. Federal law requires it.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch mb-8">
+      <!-- Core -->
+      <div class="rounded-3xl p-10 flex flex-col reveal" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px)">
+        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:rgba(255,255,255,0.4)">Most popular · Pay as you go</p>
+        <h3 class="serif text-2xl font-bold text-white mb-2">Vance Ready Monthly</h3>
+        <p class="text-sm italic mb-8" style="color:rgba(255,255,255,0.55)">"Start with $1. Upgrade or cancel any time."</p>
+        <div class="mb-6"><span class="serif text-5xl font-bold text-white">$97</span><span style="color:rgba(255,255,255,0.5)">/mo</span></div>
+        <p class="text-xs mb-8 leading-relaxed" style="color:rgba(255,255,255,0.45)">Billed monthly · After your first dispute round is submitted and documented</p>
+        <ul class="space-y-3 mb-10 flex-grow">
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>3-bureau dispute letters every round</li>
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>Goal-track optimization for Auto, Home, or Business</li>
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>Real-time client portal</li>
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>Bureau response tracking and follow-up</li>
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>6-Month Service Guarantee included</li>
+        </ul>
+        <button onclick="showPage('signup')" class="w-full py-4 rounded-xl font-bold transition-all hover:bg-white/10" style="border:1px solid rgba(255,255,255,0.2);color:white">Select Vance Ready</button>
+      </div>
+      <!-- Featured -->
+      <div class="rounded-3xl p-10 flex flex-col relative overflow-hidden shadow-2xl scale-105 reveal delay-2" style="background:linear-gradient(135deg,#2b6860,#0f1c2c);border:1px solid #2b6860">
+        <div class="absolute top-0 right-0 rounded-bl-xl px-4 py-1.5 text-xs font-black uppercase tracking-tight" style="background:white;color:#0f1c2c">Most Popular</div>
+        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:rgba(255,255,255,0.5)">Premium offer · Highest transformation</p>
+        <h3 class="serif text-2xl font-bold text-white mb-2">Vance Complete</h3>
+        <p class="text-sm italic mb-8" style="color:rgba(255,255,255,0.7)">"One price. One dedicated advisor. 12 months. Every tool we legally have."</p>
+        <div class="mb-2"><span class="serif text-5xl font-bold text-white">$997</span><span style="color:rgba(255,255,255,0.6)"> flat</span></div>
+        <span class="inline-block text-xs font-bold px-3 py-1 rounded-full mb-6 w-fit" style="background:rgba(177,238,228,0.2);color:#b1eee4">Save $167 vs paying monthly for 12 months</span>
+        <ul class="space-y-3 mb-10 flex-grow">
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>Everything in Vance Ready · 12 months</li>
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span><strong>Dedicated Credit Advisor</strong> — one person, your file, 12 months</li>
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>Creditor intervention + goodwill letters</li>
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>Debt validation letters — forcing collectors to prove the debt</li>
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>4 quarterly strategy calls every 90 days</li>
+        </ul>
+        <button onclick="showPage('signup')" class="w-full py-4 rounded-xl font-extrabold shadow-xl transition-all hover:scale-105" style="background:white;color:#0f1c2c">Start Your Journey</button>
+      </div>
+      <!-- Guard -->
+      <div class="rounded-3xl p-10 flex flex-col reveal" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px)">
+        <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:rgba(255,255,255,0.4)">Continuity · Graduates only</p>
+        <h3 class="serif text-2xl font-bold text-white mb-2">Vance Guard</h3>
+        <p class="text-sm italic mb-8" style="color:rgba(255,255,255,0.55)">"You built your score. Don't let anything knock it back down."</p>
+        <div class="mb-6"><span class="serif text-5xl font-bold text-white">$27.99</span><span style="color:rgba(255,255,255,0.5)">/mo</span></div>
+        <p class="text-xs mb-8" style="color:rgba(255,255,255,0.4)">Annual: $279/year — save $57 · Presented only when you reach your milestone</p>
+        <ul class="space-y-3 mb-10 flex-grow">
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>3-bureau daily monitoring</li>
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>New item dispute response within 48 hours</li>
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>Monthly score snapshot in your portal</li>
+          <li class="flex items-start gap-3 text-sm text-white"><span class="material-symbols-outlined text-sm mt-0.5" style="color:#b1eee4">check</span>Identity theft monitoring</li>
+        </ul>
+        <button onclick="showPage('signup')" class="w-full py-4 rounded-xl font-bold transition-all hover:bg-white/10" style="border:1px solid rgba(255,255,255,0.2);color:white">Protect My Score</button>
+      </div>
+    </div>
+    <p class="text-center text-xs max-w-lg mx-auto leading-relaxed" style="color:rgba(255,255,255,0.25)">Federal law under CROA prohibits advance fees for credit repair. Every option above bills only after documented dispute activity. No exceptions.</p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="py-24 px-6" style="background:rgba(255,255,255,0.22)">
+  <div class="max-w-3xl mx-auto">
+    <p class="text-xs font-bold uppercase tracking-widest mb-4" style="color:#2b6860">The process</p>
+    <h2 class="serif text-4xl md:text-5xl font-bold mb-4" style="color:#191c1e">No mystery. No fine print buried in the steps.</h2>
+    <p class="text-lg mb-16" style="color:#44474c">Every step, in order, exactly as it happens.</p>
+    <div class="space-y-0">
+      <div class="grid grid-cols-[64px_1fr] gap-7 py-8 reveal" style="border-bottom:1px solid rgba(25,28,30,0.08)">
+        <p class="serif text-5xl font-bold text-right pt-1" style="color:rgba(25,28,30,0.1)">01</p>
+        <div><p class="font-bold text-lg mb-2" style="color:#191c1e">Vance Score Report — $1 for 7 days</p><p class="text-sm leading-relaxed mb-3" style="color:#44474c">You pull your 3-bureau report through our credit monitoring partner. A member of our team reviews every line and delivers a personalized dispute target list — what we'd challenge, why, and what the strategy is for your goal track. If we don't think we can make a meaningful difference, we tell you before you enroll in anything.</p><p class="text-sm font-semibold" style="color:#2b6860">→ Real analysis. Not an algorithm. Not a quiz.</p></div>
+      </div>
+      <div class="grid grid-cols-[64px_1fr] gap-7 py-8 reveal" style="border-bottom:1px solid rgba(25,28,30,0.08)">
+        <p class="serif text-5xl font-bold text-right pt-1" style="color:rgba(25,28,30,0.1)">02</p>
+        <div><p class="font-bold text-lg mb-2" style="color:#191c1e">Your rights. Your contract. Three days to decide.</p><p class="text-sm leading-relaxed mb-3" style="color:#44474c">Before any work begins, you receive the Consumer Credit File Rights Under State and Federal Law disclosure — which explains your right to dispute items yourself at no cost. Federal law requires us to give you this.</p><p class="text-sm font-semibold" style="color:#2b6860">→ 3 business days to cancel for a full refund. Your legal right. No questions.</p></div>
+      </div>
+      <div class="grid grid-cols-[64px_1fr] gap-7 py-8 reveal" style="border-bottom:1px solid rgba(25,28,30,0.08)">
+        <p class="serif text-5xl font-bold text-right pt-1" style="color:rgba(25,28,30,0.1)">03</p>
+        <div><p class="font-bold text-lg mb-2" style="color:#191c1e">Dispute strategy built for your goal</p><p class="text-sm leading-relaxed" style="color:#44474c">Auto Approved, Home Approved, or Business Funded. Your dispute strategy is built specifically for what you're trying to qualify for — not a generic template. The items a mortgage underwriter flags are different from what an auto lender looks at.</p></div>
+      </div>
+      <div class="grid grid-cols-[64px_1fr] gap-7 py-8 reveal" style="border-bottom:1px solid rgba(25,28,30,0.08)">
+        <p class="serif text-5xl font-bold text-right pt-1" style="color:rgba(25,28,30,0.1)">04</p>
+        <div><p class="font-bold text-lg mb-2" style="color:#191c1e">We submit. You watch.</p><p class="text-sm leading-relaxed mb-3" style="color:#44474c">Written dispute letters go to the bureaus — and when appropriate, directly to original creditors. Bureaus have 30 days to investigate under federal law. We track every open dispute and follow up. Everything is documented in real time in your portal.</p><p class="text-sm font-semibold" style="color:#2b6860">→ Your portal shows the work. Then you see the invoice. Never the other way around.</p></div>
+      </div>
+      <div class="grid grid-cols-[64px_1fr] gap-7 py-8 reveal" style="border-bottom:1px solid rgba(25,28,30,0.08)">
+        <p class="serif text-5xl font-bold text-right pt-1" style="color:rgba(25,28,30,0.1)">05</p>
+        <div><p class="font-bold text-lg mb-2" style="color:#191c1e">Billing — only after work is documented</p><p class="text-sm leading-relaxed mb-3" style="color:#44474c">Your first charge fires after your dispute round is submitted and documented in your portal. Not at signup. Not at contract signing. After the work. Every billing cycle follows the same sequence: work, documentation, invoice. Federal law requires it.</p><p class="text-sm font-semibold" style="color:#2b6860">→ Exact billing timing stated in your written contract before you sign.</p></div>
+      </div>
+      <div class="grid grid-cols-[64px_1fr] gap-7 py-8 reveal">
+        <p class="serif text-5xl font-bold text-right pt-1" style="color:rgba(25,28,30,0.1)">06</p>
+        <div><p class="font-bold text-lg mb-2" style="color:#191c1e">Milestone — you reach your target range</p><p class="text-sm leading-relaxed" style="color:#44474c">We send your Vance Milestone Report — a summary of dispute activity and verified resolutions. If you came through a dealer referral, we coordinate your return. If you're on the home track, the report is formatted for your loan officer conversation.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="py-24 px-6" style="background:rgba(242,244,246,0.25)">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 space-y-4">
+      <p class="text-xs font-bold uppercase tracking-widest" style="color:#2b6860">FAQ</p>
+      <h2 class="serif text-4xl md:text-5xl font-bold" style="color:#191c1e">Questions we get every day.</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div class="rounded-2xl p-7 hover-lift reveal" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)"><p class="font-bold text-base mb-3" style="color:#191c1e">Do you charge before you do any work?</p><p class="text-sm leading-relaxed" style="color:#44474c">Never. Federal law under CROA prohibits it — and we've built our entire operation around this fact. Your first charge fires after your first dispute round is submitted and visible in your portal. Not at signup. After the work.</p></div>
+      <div class="rounded-2xl p-7 hover-lift reveal" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)"><p class="font-bold text-base mb-3" style="color:#191c1e">Can you guarantee my score will go up?</p><p class="text-sm leading-relaxed" style="color:#44474c"><strong style="color:#191c1e">No — and any company that tells you they can is violating federal law.</strong> We guarantee what we control: our documented effort, our dispute submissions, our follow-up. How credit bureaus respond is outside our control.</p></div>
+      <div class="rounded-2xl p-7 hover-lift reveal" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)"><p class="font-bold text-base mb-3" style="color:#191c1e">What is the 6-Month Service Guarantee?</p><p class="text-sm leading-relaxed" style="color:#44474c">If after 6 months of active enrollment we have not submitted documented dispute activity on your credit file, we refund every service fee and work your file for another 6 months at no charge. This guarantees our effort — not specific outcomes.</p></div>
+      <div class="rounded-2xl p-7 hover-lift reveal" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)"><p class="font-bold text-base mb-3" style="color:#191c1e">How long does credit repair take?</p><p class="text-sm leading-relaxed" style="color:#44474c">Bureaus have 30 days by law to investigate each dispute. How long your journey takes depends on your specific file, the number of disputable items, and how bureaus respond. After reviewing your Vance Score Report, we give you an honest estimate.</p></div>
+      <div class="rounded-2xl p-7 hover-lift reveal" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)"><p class="font-bold text-base mb-3" style="color:#191c1e">Can I do this myself for free?</p><p class="text-sm leading-relaxed" style="color:#44474c">Yes — and we are legally required to tell you this, so we will. You have the right to dispute inaccurate items directly with the credit bureaus at no cost. That right is explained in the Consumer Credit File Rights disclosure you receive before signing anything with us.</p></div>
+      <div class="rounded-2xl p-7 hover-lift reveal" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)"><p class="font-bold text-base mb-3" style="color:#191c1e">Can I cancel?</p><p class="text-sm leading-relaxed" style="color:#44474c">Yes. Within 3 business days of signing — full refund, no questions. That's your right under federal law and it's in every Vance Credit contract. After that, cancel any time. You only pay for completed dispute rounds. No cancellation fees.</p></div>
+      <div class="rounded-2xl p-7 hover-lift reveal" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)"><p class="font-bold text-base mb-3" style="color:#191c1e">What's a goal track?</p><p class="text-sm leading-relaxed" style="color:#44474c">Auto Approved, Home Approved, or Business Funded. Different lenders look at different items. We build your dispute strategy around your specific loan type — not a one-size-fits-all approach.</p></div>
+      <div class="rounded-2xl p-7 hover-lift reveal" style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 24px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)"><p class="font-bold text-base mb-3" style="color:#191c1e">Do you work in every state?</p><p class="text-sm leading-relaxed" style="color:#44474c">Most U.S. states, yes. Georgia is the exception — Georgia law makes for-profit credit repair a misdemeanor. Georgia residents are routed to our partner nonprofit foundation at no charge.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONSUMER RIGHTS -->
+<section id="legal" class="py-16 px-6" style="background:rgba(255,255,255,0.22)">
+  <div class="max-w-2xl mx-auto">
+    <p class="text-xs font-bold uppercase tracking-widest mb-4" style="color:#2b6860">Your rights</p>
+    <h2 class="serif text-3xl font-bold mb-8" style="color:#191c1e">Consumer Credit File Rights Under State and Federal Law</h2>
+    <div class="rounded-2xl p-8" style="background:rgba(255,255,255,0.5);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.7);box-shadow:0 8px 32px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)">
+      <p class="text-sm leading-relaxed mb-4" style="color:#44474c">Federal law requires Vance Credit to provide you with this disclosure before any contract is signed. We provide it as a separate signed document at contract execution.</p>
+      <div class="space-y-3 my-5">
+        <div class="flex gap-3 text-sm" style="color:#44474c"><span class="font-bold flex-shrink-0" style="color:#0f1c2c">→</span>You have a right to dispute inaccurate information in your credit report by contacting the credit bureau directly. <strong style="color:#191c1e">There is no charge for this service.</strong></div>
+        <div class="flex gap-3 text-sm" style="color:#44474c"><span class="font-bold flex-shrink-0" style="color:#0f1c2c">→</span>You have a right to obtain a free copy of your credit report from each major bureau once per year at AnnualCreditReport.com.</div>
+        <div class="flex gap-3 text-sm" style="color:#44474c"><span class="font-bold flex-shrink-0" style="color:#0f1c2c">→</span>You have a right to place a security freeze on your credit report without charge.</div>
+        <div class="flex gap-3 text-sm" style="color:#44474c"><span class="font-bold flex-shrink-0" style="color:#0f1c2c">→</span>You may seek damages from violators. If a credit repair organization violates CROA, you may sue for actual damages, punitive damages, and attorney's fees.</div>
+        <div class="flex gap-3 text-sm" style="color:#44474c"><span class="font-bold flex-shrink-0" style="color:#0f1c2c">→</span>State law may impose additional requirements. Consult your state attorney general.</div>
+      </div>
+      <p class="text-sm font-semibold mb-4" style="color:#0f1c2c">You may perform the services described in your Vance Credit contract yourself, for free, by contacting the credit bureaus directly. You are not required to use Vance Credit.</p>
+      <div class="text-xs leading-relaxed pt-4" style="border-top:1px solid rgba(25,28,30,0.08);color:#44474c">
+        <strong style="color:#191c1e">File a complaint:</strong> FTC — reportfraud.ftc.gov · CFPB — consumerfinance.gov/complaint · Your State AG — naag.org/find-my-ag/<br>
+        <strong style="color:#191c1e">Cancel within 3 days:</strong> Contact us by any means. Full refund within 5 business days.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="start" class="py-24 px-6 text-center relative overflow-hidden" style="background:#0f1c2c">
+  <div style="position:absolute;inset:0;overflow:hidden"><div style="position:absolute;width:500px;height:500px;border-radius:50%;background:#2b6860;opacity:0.12;filter:blur(80px);top:-20%;right:-10%"></div><div style="position:absolute;width:400px;height:400px;border-radius:50%;background:#d6e4f9;opacity:0.08;filter:blur(80px);bottom:-10%;left:-5%"></div></div>
+  <div class="max-w-xl mx-auto relative" style="z-index:1">
+    <h2 class="serif text-4xl md:text-6xl font-bold leading-tight text-white mb-6">Your file has a story.<br>Let's find out <span class="italic" style="color:#b1eee4">what it actually says.</span></h2>
+    <p class="text-lg mb-10" style="color:rgba(255,255,255,0.55)">3 minutes. $1. A real person reviews your real file. No commitment until you decide.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+      <button onclick="showPage('signup')" class="btn-primary px-10 py-5 rounded-xl font-bold text-lg flex items-center justify-center gap-2">
+        See what's holding you back — $1 <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+      <button onclick="doScroll('#pricing')" class="btn-glass px-10 py-5 rounded-xl font-bold text-lg" style="color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15)">View all plans</button>
+    </div>
+    <p class="text-xs leading-relaxed" style="color:rgba(255,255,255,0.28)">Vance Credit LLC is a Credit Repair Organization operating under 15 U.S.C. § 1679 et seq. No advance fees collected. Post-service billing only. Individual results vary and are not guaranteed. You have the right to dispute inaccurate information directly with credit bureaus at no cost.</p>
+  </div>
+</section>
+
+<!-- FOOTER HOME -->
+<footer style="background:rgba(242,244,246,0.7);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.5)">
+  <div class="max-w-7xl mx-auto px-8 pt-20 pb-10">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+      <div>
+        <button onclick="showPage('home')" class="serif text-3xl font-black mb-6 block" style="color:#0f1c2c">Vance Credit</button>
+        <p class="text-sm leading-relaxed mb-6" style="color:#6b7280">Elite financial tools for the modern digital era. Master your legacy with Vance Credit.</p>
+        <div class="flex gap-4">
+          <a href="https://vancecredit.com" target="_blank"><span class="material-symbols-outlined cursor-pointer hover:text-secondary transition-colors" style="color:#9ca3af">language</span></a>
+          <a href="mailto:contact@vancecredit.com"><span class="material-symbols-outlined cursor-pointer hover:text-secondary transition-colors" style="color:#9ca3af">mail</span></a>
+        </div>
+      </div>
+      <div>
+        <h4 class="serif text-xl font-bold mb-6" style="color:#0f1c2c">Ecosystem</h4>
+        <ul class="space-y-4">
+          <li><button onclick="showPage('home');doScroll('#cost')" class="hover-slide text-sm" style="color:#6b7280">The Cost</button></li>
+          <li><button onclick="showPage('home');doScroll('#guarantee')" class="hover-slide text-sm" style="color:#6b7280">Guarantee</button></li>
+          <li><button onclick="showPage('home');doScroll('#pricing')" class="hover-slide text-sm" style="color:#6b7280">Pricing</button></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="serif text-xl font-bold mb-6" style="color:#0f1c2c">Resources</h4>
+        <ul class="space-y-4">
+          <li><button onclick="showPage('home');doScroll('#faq')" class="hover-slide text-sm" style="color:#6b7280">FAQ</button></li>
+          <li><button onclick="showPage('tools')" class="hover-slide text-sm" style="color:#2b6860;font-weight:600">Tools</button></li>
+          <li><button onclick="showPage('home');doScroll('#legal')" class="hover-slide text-sm" style="color:#6b7280">Your Rights</button></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="serif text-xl font-bold mb-6" style="color:#0f1c2c">Legal</h4>
+        <ul class="space-y-4">
+          <li><button onclick="showPage('terms')" class="hover-slide text-sm" style="color:#6b7280">Terms</button></li>
+          <li><button onclick="showPage('privacy')" class="hover-slide text-sm" style="color:#6b7280">Privacy</button></li>
+          <li class="pt-2">
+            <div class="glass p-4 rounded-xl" style="background:white">
+              <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#9ca3af">Contact</p>
+              <a href="mailto:contact@vancecredit.com" class="text-xs" style="color:#44474c;display:block">contact@vancecredit.com</a>
+              <a href="tel:+15165482623" class="text-xs" style="color:#44474c;display:block">+1 (516) 548-2623</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-20 pt-10 text-center text-sm" style="border-top:1px solid #e5e7eb;color:#9ca3af">
+      Vance Credit LLC · 800 Maine Ave SW, Washington, DC 20024-2805 · Credit Repair Organization · 15 U.S.C. § 1679 et seq. · No advance fees · Individual results vary and are not guaranteed · Georgia residents served through partner nonprofit foundation<br>
+      <span class="mt-2 inline-block">© 2026 Vance Credit LLC. The Digital Private Bank. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE: SIGNUP
+═══════════════════════════════════════════════════════════════ -->
+<div id="page-signup" class="page" style="flex-direction:column">
+<div class="flex-1 py-12 px-6" style="background:transparent">
+  <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start signup-grid">
+    <!-- Left pitch -->
+    <div>
+      <p class="text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2" style="color:#2b6860"><span class="inline-block w-6 h-0.5" style="background:#2b6860"></span>$1 to start — real analysis, not an algorithm</p>
+      <h1 class="serif text-4xl md:text-5xl font-bold leading-tight mb-5" style="color:#191c1e">See what's holding<br>your score <span class="italic" style="color:#2b6860">back.</span></h1>
+      <p class="text-base leading-relaxed mb-8" style="color:#44474c">A real person reviews your full 3-bureau credit report and delivers a personalized dispute target list — before you commit to anything. No commitment until you decide to enroll.</p>
+      <div class="space-y-4 mb-8">
+        <div class="flex items-start gap-3 text-sm" style="color:#44474c"><span class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold" style="background:#b1eee4;color:#095049">✓</span><span><strong style="color:#191c1e">No setup fees, ever.</strong> Federal law prohibits advance charges. Your first service payment fires only after we've done documented work.</span></div>
+        <div class="flex items-start gap-3 text-sm" style="color:#44474c"><span class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold" style="background:#b1eee4;color:#095049">✓</span><span><strong style="color:#191c1e">You see the work before the bill.</strong> Every dispute is visible in your real-time portal before any invoice is issued.</span></div>
+        <div class="flex items-start gap-3 text-sm" style="color:#44474c"><span class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold" style="background:#b1eee4;color:#095049">✓</span><span><strong style="color:#191c1e">3-day cancellation right by federal law.</strong> Cancel within 3 business days for a full refund. No questions.</span></div>
+        <div class="flex items-start gap-3 text-sm" style="color:#44474c"><span class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold" style="background:#b1eee4;color:#095049">✓</span><span><strong style="color:#191c1e">6-Month Service Guarantee.</strong> No documented dispute activity after 6 months? Full refund + 6 more months free.</span></div>
+      </div>
+      <!-- Math strip -->
+      <div class="rounded-2xl p-6 mb-6" style="background:rgba(255,255,255,0.8);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 32px rgba(25,28,30,0.07),inset 0 1px 0 rgba(255,255,255,0.9)">
+        <p class="text-xs font-bold uppercase tracking-widest mb-4" style="color:#9ca3af">What your score costs you — illustrative example, $30k auto loan, 60 months</p>
+        <div class="space-y-2">
+          <div class="flex justify-between text-sm py-2.5" style="border-bottom:1px solid rgba(25,28,30,0.07)"><span style="color:#44474c">Score ~541 / ~20% APR</span><span class="font-bold" style="color:#b91c1c">~$760/month · ~$45,600 total</span></div>
+          <div class="flex justify-between text-sm py-2.5" style="border-bottom:1px solid rgba(25,28,30,0.07)"><span style="color:#44474c">Score 680+ / ~7% APR</span><span class="font-bold" style="color:#095049">~$585/month · ~$35,100 total</span></div>
+          <div class="flex justify-between text-sm pt-3 font-bold"><span style="color:#191c1e">Extra cost of a lower score</span><span class="text-lg" style="color:#095049">~$10,500</span></div>
+        </div>
+        <p class="text-xs mt-3 leading-relaxed" style="color:#9ca3af">Rate ranges are illustrative estimates. Actual rates vary by lender and individual circumstances.</p>
+      </div>
+      <!-- Social proof -->
+      <div class="space-y-3">
+        <div class="rounded-xl p-4 flex gap-3 items-start" style="background:rgba(255,255,255,0.75);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.5);box-shadow:0 4px 16px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)">
+          <div class="score-bad px-2 py-1 rounded-lg serif font-bold text-sm flex-shrink-0">541</div><span style="color:#9ca3af;font-size:11px">→</span><div class="score-good px-2 py-1 rounded-lg serif font-bold text-sm flex-shrink-0">623</div>
+          <div><p class="text-sm italic leading-relaxed" style="color:#44474c">"I didn't believe it until I saw the deletions in my portal. Then I went back to the same dealer."</p><p class="text-xs mt-1" style="color:#9ca3af">Marcus T. · Houston, TX · Auto track · 4 months</p></div>
+        </div>
+        <div class="rounded-xl p-4 flex gap-3 items-start" style="background:rgba(255,255,255,0.75);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.5);box-shadow:0 4px 16px rgba(25,28,30,0.06),inset 0 1px 0 rgba(255,255,255,0.9)">
+          <div class="score-bad px-2 py-1 rounded-lg serif font-bold text-sm flex-shrink-0">578</div><span style="color:#9ca3af;font-size:11px">→</span><div class="score-good px-2 py-1 rounded-lg serif font-bold text-sm flex-shrink-0">641</div>
+          <div><p class="text-sm italic leading-relaxed" style="color:#44474c">"My loan officer said I needed 620. We closed 6 weeks after hitting 641."</p><p class="text-xs mt-1" style="color:#9ca3af">Danielle M. · Charlotte, NC · Home track · 5 months</p></div>
+        </div>
+      </div>
+      <p class="text-xs mt-4 leading-relaxed" style="color:#9ca3af">Individual results vary significantly. Not all clients see score changes. Results are not typical. These clients were not compensated.</p>
+    </div>
+    <!-- Right: Form card -->
+    <div class="sticky-form">
+      <div class="rounded-2xl overflow-hidden" style="box-shadow:0 20px 60px rgba(25,28,30,0.1)">
+        <div style="background:linear-gradient(135deg,#0f1c2c,#2b6860)" class="p-7">
+          <div class="flex items-baseline gap-3 mb-3">
+            <span class="serif text-5xl font-bold text-white">$1</span>
+            <div class="text-sm leading-tight" style="color:rgba(255,255,255,0.65)">for 7 days · then $27.99/month monitoring<br><strong style="color:white">No commitment until you decide to enroll</strong></div>
+          </div>
+          <p class="text-xs leading-relaxed mb-5" style="color:rgba(255,255,255,0.6)">A real person reviews your 3-bureau report and tells you exactly what's disputable — before you pay anything for credit repair.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.9)">No setup fees</span>
+            <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.9)">Cancel anytime</span>
+            <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.9)">CROA compliant</span>
+          </div>
+        </div>
+        <div style="background:white" id="formBody">
+          <div class="p-7">
+            <div class="rounded-xl p-3 mb-5 text-sm font-semibold" style="background:#fef2f2;color:#b91c1c;display:none" id="errorBanner">Please fix the errors above before continuing.</div>
+            <p class="text-xs font-bold uppercase tracking-widest mb-5" style="color:#9ca3af">Your information</p>
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-3">
+                <div><label class="block text-xs font-bold mb-1.5 uppercase tracking-widest" style="color:#44474c">First name *</label><input type="text" id="firstName" placeholder="Marcus" autocomplete="given-name"><span class="err-msg" id="err-firstName">First name is required</span></div>
+                <div><label class="block text-xs font-bold mb-1.5 uppercase tracking-widest" style="color:#44474c">Last name *</label><input type="text" id="lastName" placeholder="Johnson" autocomplete="family-name"><span class="err-msg" id="err-lastName">Last name is required</span></div>
+              </div>
+              <div><label class="block text-xs font-bold mb-1.5 uppercase tracking-widest" style="color:#44474c">Email address *</label><input type="email" id="email" placeholder="marcus@email.com" autocomplete="email"><span class="err-msg" id="err-email">A valid email address is required</span></div>
+              <div><label class="block text-xs font-bold mb-1.5 uppercase tracking-widest" style="color:#44474c">Mobile phone *</label><div style="position:relative"><span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;color:#44474c;pointer-events:none">+1</span><input type="tel" id="phone" placeholder="(555) 555-5555" style="padding-left:38px" autocomplete="tel" maxlength="14"></div><span class="err-msg" id="err-phone">A valid 10-digit U.S. mobile number is required</span></div>
+              <div><label class="block text-xs font-bold mb-1.5 uppercase tracking-widest" style="color:#44474c">What are you trying to qualify for? *</label><select id="goal"><option value="">Select your goal</option><option value="auto">Auto loan — I was declined or need a better rate</option><option value="home">Home purchase — FHA or conventional mortgage</option><option value="business">Business loan or SBA funding</option><option value="general">General credit improvement</option><option value="other">Something else</option></select><span class="err-msg" id="err-goal">Please select your goal</span></div>
+              <div><label class="block text-xs font-bold mb-1.5 uppercase tracking-widest" style="color:#44474c">Approximate current credit score *</label><select id="score"><option value="">Select a range</option><option value="below500">Below 500</option><option value="500-549">500–549</option><option value="550-579">550–579</option><option value="580-619">580–619</option><option value="620-649">620–649</option><option value="650-679">650–679</option><option value="680+">680 or above</option><option value="unknown">I'm not sure</option></select><span class="err-msg" id="err-score">Please select a score range</span></div>
+            </div>
+            <!-- Consents -->
+            <div class="mt-5 rounded-2xl p-4" style="background:rgba(255,255,255,0.5);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.7);box-shadow:0 4px 16px rgba(25,28,30,0.05),inset 0 1.5px 0 rgba(255,255,255,0.95)">
+              <p class="text-xs font-bold uppercase tracking-widest mb-4" style="color:#9ca3af">Agreements &amp; consent</p>
+              <div class="pb-3" style="border-bottom:1px solid rgba(25,28,30,0.07)">
+                <div class="flex gap-3 items-start">
+                  <input type="checkbox" class="custom-check" id="consentTerms">
+                  <div class="text-xs leading-relaxed" style="color:#44474c;flex:1"><strong style="color:#191c1e">Terms of Service and Privacy Policy <span style="color:#b91c1c;font-size:10px;font-weight:700">REQUIRED</span></strong><br>I have read and agree to Vance Credit's <button onclick="showPage('terms')" style="color:#0f1c2c;text-decoration:underline;background:none;border:none;cursor:pointer;font-size:inherit">Terms of Service</button> and <button onclick="showPage('privacy')" style="color:#0f1c2c;text-decoration:underline;background:none;border:none;cursor:pointer;font-size:inherit">Privacy Policy</button>, including the Consumer Credit File Rights disclosure required by 15 U.S.C. § 1679c. I understand that I have the right to dispute inaccurate information on my credit report directly with the credit bureaus at no cost.</div>
+                </div>
+                <span class="err-msg" id="err-consentTerms" style="padding-left:32px">You must agree to the Terms of Service to continue</span>
+              </div>
+              <div class="py-3" style="border-bottom:1px solid rgba(25,28,30,0.07)">
+                <div class="flex gap-3 items-start">
+                  <input type="checkbox" class="custom-check sms" id="consentSMS">
+                  <div class="text-xs leading-relaxed" style="color:#44474c;flex:1"><strong style="color:#191c1e">SMS Text Message Alerts</strong> (Optional)<br>I agree to receive automated SMS text messages from Vance Credit LLC regarding my account status, dispute updates, and service information. Message and data rates may apply. Reply STOP to cancel at any time. Consent is not a condition of service.
+                  </div>
+                </div>
+              </div>
+              <div class="pt-3">
+                <div class="flex gap-3 items-start">
+                  <input type="checkbox" class="custom-check" id="consentEmail">
+                  <div class="text-xs" style="color:#44474c;flex:1"><strong style="color:#191c1e">Email Communications</strong> (Optional)<br>I agree to receive email communications about my account, dispute progress, and Vance Credit services.</div>
+                </div>
+              </div>
+            </div>
+            <button onclick="handleSubmit()" id="submitBtn" class="btn-primary w-full py-4 rounded-full font-bold text-base mt-5 flex items-center justify-center gap-2">
+              Start my $1 analysis <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+            <p class="text-xs text-center mt-3 leading-relaxed" style="color:#9ca3af">By submitting you acknowledge the Consumer Credit File Rights disclosure. You may cancel within 3 business days for a full refund.</p>
+          </div>
+        </div>
+        <!-- Success state -->
+        <div id="successState" style="display:none;padding:40px;text-align:center;background:white">
+          <div style="font-size:48px;margin-bottom:16px">✅</div>
+          <h3 class="serif text-2xl font-bold mb-3" style="color:#191c1e">You're in. Let's get to work.</h3>
+          <p class="text-sm leading-relaxed" style="color:#44474c">A Vance Credit advisor will review your full 3-bureau report and deliver your personalized dispute target list within 1 business day. Check your email for next steps.</p>
+          <div id="smsConfirmNote" style="display:none;margin-top:16px;padding:14px;background:#b1eee4;border-radius:12px;font-size:13px;color:#095049;line-height:1.6">You've opted in to SMS alerts. You'll receive dispute updates and status messages. Reply STOP at any time to cancel.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Signup footer -->
+<footer style="background:#f2f4f6;margin-top:auto">
+  <div class="max-w-7xl mx-auto px-8 py-8 flex flex-wrap justify-between items-center gap-4" style="border-top:1px solid #e5e7eb">
+    <button onclick="showPage('home')" class="serif text-xl font-black" style="color:#0f1c2c">Vance Credit</button>
+    <div class="flex gap-6 flex-wrap">
+      <button onclick="showPage('home')" class="text-sm hover:underline" style="color:#6b7280">Home</button>
+      <button onclick="showPage('terms')" class="text-sm hover:underline" style="color:#6b7280">Terms of Service</button>
+      <button onclick="showPage('privacy')" class="text-sm hover:underline" style="color:#6b7280">Privacy Policy</button>
+    </div>
+    <div class="flex gap-4 text-sm" style="color:#6b7280">
+      <a href="mailto:contact@vancecredit.com">contact@vancecredit.com</a>
+      <a href="tel:+15165482623">+1 (516) 548-2623</a>
+    </div>
+    <p class="w-full text-xs" style="color:#9ca3af">Vance Credit LLC · 800 Maine Ave SW, Washington, DC 20024-2805 · CROA Compliant · © 2026</p>
+  </div>
+</footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE: TOOLS
+═══════════════════════════════════════════════════════════════ -->
+<div id="page-tools" class="page" style="flex-direction:column">
+
+<!-- Tools page header -->
+<div style="background:rgba(255,255,255,0.55);backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid rgba(255,255,255,0.6);padding:28px 32px;position:relative;z-index:2">
+  <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-4">
+    <div>
+      <p class="text-xs font-bold uppercase tracking-widest mb-1 flex items-center gap-2" style="color:#2b6860">
+        <span style="display:inline-block;width:24px;height:2px;background:#2b6860"></span>Free financial tools
+      </p>
+      <h1 class="serif text-3xl md:text-4xl font-bold" style="color:#191c1e">
+        Precision Financial <span class="italic" style="color:#2b6860">Tools.</span>
+      </h1>
+    </div>
+    <button onclick="showPage('signup')" class="btn-primary flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm">
+      Start for $1 <span class="material-symbols-outlined text-base">arrow_forward</span>
+    </button>
+  </div>
+</div>
+
+<!-- Iframe embed — full height, no scroll artifacts -->
+<div style="flex:1;display:flex;flex-direction:column;position:relative;z-index:1;min-height:calc(100vh - 130px)">
+  <iframe
+    src="https://vance-tools.replit.app/"
+    style="flex:1;width:100%;min-height:calc(100vh - 130px);border:none;display:block"
+    allow="clipboard-write"
+    loading="lazy"
+    title="Vance Credit Tools"
+  ></iframe>
+</div>
+
+<footer style="background:rgba(242,244,246,0.7);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.5);margin-top:auto">
+  <div class="max-w-7xl mx-auto px-8 py-6 flex flex-wrap justify-between items-center gap-4">
+    <button onclick="showPage('home')" class="serif text-xl font-black" style="color:#0f1c2c">Vance Credit</button>
+    <div class="flex gap-6 flex-wrap">
+      <button onclick="showPage('home')" class="text-sm hover:underline" style="color:#6b7280">Home</button>
+      <button onclick="showPage('signup')" class="text-sm hover:underline" style="color:#6b7280">Get Started</button>
+      <button onclick="showPage('privacy')" class="text-sm hover:underline" style="color:#6b7280">Privacy Policy</button>
+      <button onclick="showPage('terms')" class="text-sm hover:underline" style="color:#6b7280">Terms of Service</button>
+    </div>
+    <p class="w-full text-xs" style="color:#9ca3af">Vance Credit LLC · 800 Maine Ave SW, Washington, DC 20024-2805 · All tools are for informational purposes only. © 2026 Vance Credit LLC.</p>
+  </div>
+</footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE: PRIVACY
+═══════════════════════════════════════════════════════════════ -->
+<div id="page-privacy" class="page" style="flex-direction:column">
+<div style="background:rgba(242,244,246,0.3);padding:52px 32px 44px;backdrop-filter:blur(16px)">
+  <div class="max-w-3xl mx-auto">
+    <span class="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style="background:#b1eee4;color:#095049">Legal document</span>
+    <h1 class="serif text-4xl md:text-5xl font-bold mb-4" style="color:#191c1e">Privacy Policy</h1>
+    <div class="flex gap-5 flex-wrap text-sm" style="color:#44474c">
+      <span>Vance Credit LLC</span><span>·</span><span>Effective Date: [INSERT DATE]</span><span>·</span><span>Last Updated: [INSERT DATE]</span>
+    </div>
+  </div>
+</div>
+<div class="max-w-3xl mx-auto px-8 pb-20">
+  <div class="rounded-2xl p-7 my-10" style="background:#d6e4f9">
+    <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#0f1c2c">Summary</p>
+    <p class="text-sm leading-relaxed" style="color:#0f1c2c">Vance Credit LLC is a Credit Repair Organization operating under the Credit Repair Organizations Act (15 U.S.C. § 1679 et seq.). We collect personal information to provide credit repair services, communicate with you about your account, and send SMS messages when you give us permission. We do not sell your personal information. We do not share your information for third-party marketing.</p>
+  </div>
+  <div class="space-y-12">
+    <div id="ps1"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 01</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Who we are</h2><div class="space-y-4 text-sm leading-relaxed" style="color:#44474c"><p>Vance Credit LLC ("Vance Credit," "we," "us," or "our") is a Wyoming limited liability company operating as a Credit Repair Organization under 15 U.S.C. § 1679 et seq. Our principal place of business is 800 Maine Ave SW, Washington, DC 20024-2805.</p><p>This Privacy Policy applies to all information collected through our website, mobile-optimized pages, text message programs, phone interactions, and any related services (collectively, the "Services").</p></div></div>
+    <div id="ps2"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 02</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Information we collect</h2><div class="space-y-4 text-sm leading-relaxed" style="color:#44474c"><p><strong style="color:#191c1e">Information you provide directly:</strong> Full legal name, mailing address, date of birth, and Social Security Number; email address and phone number; payment information processed through our secure payment processor; credit report data and dispute documentation; communications you send us.</p><p><strong style="color:#191c1e">Information collected automatically:</strong> IP address, browser type, device identifiers, general location data, pages visited, and clickstream data via standard web analytics.</p><p><strong style="color:#191c1e">Information from third parties:</strong> Credit report data from all three major credit bureaus obtained through your authorized monitoring service; bureau response data; referral data from authorized partners.</p></div></div>
+    <div id="ps3"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 03</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">How we use your information</h2><div class="text-sm leading-relaxed space-y-2" style="color:#44474c"><div class="flex gap-3"><span style="color:#0f1c2c;font-weight:700">→</span>Delivering credit repair services</div><div class="flex gap-3"><span style="color:#0f1c2c;font-weight:700">→</span>Account management and portal access</div><div class="flex gap-3"><span style="color:#0f1c2c;font-weight:700">→</span>Communication via email and, with your consent, SMS</div><div class="flex gap-3"><span style="color:#0f1c2c;font-weight:700">→</span>Compliance recordkeeping (minimum 3 years)</div><div class="flex gap-3"><span style="color:#0f1c2c;font-weight:700">→</span>Legal compliance and fraud protection</div><div class="flex gap-3"><span style="color:#0f1c2c;font-weight:700">→</span>Service improvement and analytics</div><p class="mt-3">We do not use your Social Security Number or credit report data for any purpose other than delivering the services you enrolled in.</p></div></div>
+    <div id="ps4"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 04</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">SMS text message communications</h2><div class="rounded-xl p-5 mb-5" style="background:#b1eee4"><p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#095049">SMS / TCPA Compliance Notice</p><p class="text-sm leading-relaxed" style="color:#095049">By providing your phone number and opting in to text messages, you consent to receive automated text messages from Vance Credit LLC. <strong>Consent is not a condition of purchasing or receiving any service.</strong> Message and data rates may apply. Reply STOP to cancel at any time. Reply HELP for assistance.</p></div><p class="text-sm leading-relaxed" style="color:#44474c">Message frequency during active enrollment: typically 4–8 messages per month. To opt out: reply STOP to any message, or contact us at contact@vancecredit.com or +1 (516) 548-2623.</p></div>
+    <div id="ps5"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 05</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">How we share your information</h2><p class="text-sm leading-relaxed mb-4" style="color:#44474c"><strong style="color:#191c1e">We do not sell your personal information.</strong> We share information only with: credit bureaus (to submit disputes on your behalf), original creditors (when disputing on your behalf), service providers (credit management, payment processing, and messaging vendors — bound by contract from other uses), and as required by law.</p></div>
+    <div id="ps6"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 06</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Data retention</h2><p class="text-sm leading-relaxed mb-4" style="color:#44474c">Client service records: 5 years minimum. Call recordings: 3 years minimum. SMS consent records: 4 years minimum after opt-out. Credit report data: duration of service + 2 years. Payment records: 7 years. Website analytics: 24 months rolling.</p></div>
+    <div id="ps7"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 07</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Your rights and choices</h2><div class="text-sm leading-relaxed space-y-2" style="color:#44474c"><p>You may request access, correction, deletion, or portability of your personal information. You may opt out of SMS at any time by replying STOP. You may opt out of email marketing via the unsubscribe link. To exercise any right, contact contact@vancecredit.com. We will respond within 30 days.</p></div></div>
+    <div id="ps8"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 08</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">California residents — CCPA/CPRA</h2><div class="rounded-xl p-5" style="background:#FAEEDA"><p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#854F0B">California Notice</p><p class="text-sm leading-relaxed" style="color:#44474c">If you are a California resident, you have additional rights under CCPA/CPRA, including the right to know, delete, correct, and opt out of the sale or sharing of personal information. We do not sell or share personal information. To submit a California privacy request, contact contact@vancecredit.com with "California Privacy Request" in the subject line.</p></div></div>
+    <div id="ps9"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 09</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Security</h2><p class="text-sm leading-relaxed" style="color:#44474c">We implement SSL/TLS encryption for data transmission, encrypted storage for sensitive data, access controls limiting employee access on a need-to-know basis, and regular security reviews. If we become aware of a data breach that triggers notification obligations, we will notify affected individuals and relevant authorities as required.</p></div>
+    <div id="ps10"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 10</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Children's privacy</h2><p class="text-sm leading-relaxed" style="color:#44474c">Our services are not directed to individuals under the age of 18. We do not knowingly collect personal information from children. If you believe we have inadvertently collected information from a child, please contact us immediately at contact@vancecredit.com.</p></div>
+    <div id="ps11"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 11</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Changes to this policy</h2><p class="text-sm leading-relaxed" style="color:#44474c">We may update this Privacy Policy from time to time. When we make material changes, we will update the "Last Updated" date and, where required by law, notify you by email or through a prominent notice on our website.</p></div>
+    <div id="ps12"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 12</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Contact us</h2><div class="rounded-2xl p-7" style="background:#f2f4f6"><p class="font-bold mb-4" style="color:#191c1e">Vance Credit LLC — Privacy Inquiries</p><p class="text-sm mb-2" style="color:#44474c"><strong style="color:#191c1e;min-width:80px;display:inline-block">Address:</strong>800 Maine Ave SW, Washington, DC 20024-2805</p><p class="text-sm mb-2" style="color:#44474c"><strong style="color:#191c1e;min-width:80px;display:inline-block">Email:</strong><a href="mailto:contact@vancecredit.com" style="color:#0f1c2c">contact@vancecredit.com</a></p><p class="text-sm mb-2" style="color:#44474c"><strong style="color:#191c1e;min-width:80px;display:inline-block">Phone:</strong><a href="tel:+15165482623" style="color:#0f1c2c">+1 (516) 548-2623</a></p></div></div>
+  </div>
+</div>
+<footer style="background:#f2f4f6;margin-top:auto">
+  <div class="max-w-7xl mx-auto px-8 py-8 flex flex-wrap justify-between items-center gap-4" style="border-top:1px solid #e5e7eb">
+    <button onclick="showPage('home')" class="serif text-xl font-black" style="color:#0f1c2c">Vance Credit</button>
+    <div class="flex gap-6 flex-wrap">
+      <button onclick="showPage('home')" class="text-sm hover:underline" style="color:#6b7280">Home</button>
+      <button onclick="showPage('terms')" class="text-sm hover:underline" style="color:#6b7280">Terms of Service</button>
+      <button onclick="showPage('privacy')" class="text-sm hover:underline" style="color:#6b7280">Privacy Policy</button>
+    </div>
+    <p class="w-full text-xs" style="color:#9ca3af">Vance Credit LLC · 800 Maine Ave SW, Washington, DC 20024-2805 · Credit Repair Organization · 15 U.S.C. § 1679 et seq. · © 2026 Vance Credit LLC.</p>
+  </div>
+</footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE: TERMS
+═══════════════════════════════════════════════════════════════ -->
+<div id="page-terms" class="page" style="flex-direction:column">
+<div style="background:rgba(242,244,246,0.3);padding:52px 32px 44px;backdrop-filter:blur(16px)">
+  <div class="max-w-3xl mx-auto">
+    <span class="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style="background:#d6e4f9;color:#0f1c2c">Legal document</span>
+    <h1 class="serif text-4xl md:text-5xl font-bold mb-4" style="color:#191c1e">Terms of Service</h1>
+    <div class="flex gap-5 flex-wrap text-sm" style="color:#44474c">
+      <span>Vance Credit LLC</span><span>·</span><span>Effective Date: [INSERT DATE]</span><span>·</span><span>Last Updated: [INSERT DATE]</span>
+    </div>
+  </div>
+</div>
+<div class="max-w-3xl mx-auto px-8 pb-20">
+  <div class="rounded-2xl p-7 my-10" style="background:#d6e4f9">
+    <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#0f1c2c">Important — Please Read</p>
+    <p class="text-sm leading-relaxed" style="color:#0f1c2c">These Terms constitute a legally binding agreement. By signing a Vance Credit service agreement or submitting the enrollment form, you acknowledge that you have read, understood, and agreed to these Terms and the Privacy Policy.</p>
+  </div>
+  <div class="space-y-12">
+    <div id="ts1"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 01</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Agreement to terms</h2><p class="text-sm leading-relaxed" style="color:#44474c">These Terms of Service ("Terms") govern your use of the services provided by Vance Credit LLC, a Wyoming limited liability company operating as a Credit Repair Organization under 15 U.S.C. § 1679 et seq. By enrolling in any Vance Credit service, you agree to be bound by these Terms.</p></div>
+    <div id="ts2"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 02</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Services description</h2><p class="text-sm leading-relaxed mb-4" style="color:#44474c">Vance Credit provides credit repair services including: reviewing your credit reports from all three major credit bureaus; identifying items that may be inaccurate, unverifiable, or outdated; preparing and submitting written dispute letters; tracking bureau responses and following up; providing goal-track optimization; and providing milestone reporting.</p><div class="rounded-xl p-5" style="background:#fef2f2"><p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#b91c1c">What we cannot do</p><p class="text-sm leading-relaxed" style="color:#44474c">We cannot guarantee that any specific item will be removed from your credit report. We cannot guarantee any specific score increase. We cannot remove accurate, verified, timely information from your credit report. Any company that makes such guarantees is violating federal law.</p></div></div>
+    <div id="ts3"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 03</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">CROA disclosures and your rights</h2><div class="rounded-2xl overflow-hidden mb-4"><div class="px-5 py-3 text-xs font-bold uppercase tracking-widest" style="background:#f2f4f6;color:#191c1e">Consumer Credit File Rights Under State and Federal Law</div><div class="p-5 space-y-3" style="background:white"><p class="text-sm leading-relaxed" style="color:#44474c"><strong style="color:#191c1e">The right to dispute for free:</strong> You have a right to dispute inaccurate information in your credit report by contacting the credit bureau directly. There is no charge for this service.</p><p class="text-sm leading-relaxed" style="color:#44474c"><strong style="color:#191c1e">Free annual credit reports:</strong> You have a right to obtain a free copy of your credit report from each major bureau once per year at AnnualCreditReport.com.</p><p class="text-sm leading-relaxed" style="color:#44474c"><strong style="color:#191c1e">You are not required to use us:</strong> You may perform the services described in your Vance Credit contract yourself, for free, by contacting the credit bureaus directly.</p></div></div></div>
+    <div id="ts4"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 04</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Billing and payment</h2><div class="rounded-xl p-5 mb-5" style="background:#b1eee4"><p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#095049">Post-Service Billing — Required by Federal Law</p><p class="text-sm leading-relaxed" style="color:#095049">Federal law under CROA (15 U.S.C. § 1679b) prohibits credit repair organizations from charging any money before the service is fully performed. Vance Credit does not charge any setup fees. No advance payments. Your first charge fires after your first dispute round is submitted and documented in your portal.</p></div><p class="text-sm leading-relaxed" style="color:#44474c">Plan pricing: Vance Score Report $1 for 7 days; Vance Ready Monthly $97/month; Vance Ready 3-Month $267 total (3 post-service installments of $89); Vance Ready 6-Month $497 total; Vance Complete $997 flat (3 post-service installments of $332); Vance Guard $27.99/month.</p></div>
+    <div id="ts5"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 05</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Cancellation and refund policy</h2><p class="text-sm leading-relaxed mb-3" style="color:#44474c"><strong style="color:#191c1e">3-day cancellation right (federal law):</strong> You may cancel your service agreement without penalty within 3 business days of signing. Full refund within 5 business days.</p><p class="text-sm leading-relaxed" style="color:#44474c"><strong style="color:#191c1e">After 3 days:</strong> You may cancel at any time. No cancellation fees. You are responsible for any dispute rounds already submitted and documented prior to your cancellation notice.</p></div>
+    <div id="ts6"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 06</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">The 6-Month Service Guarantee</h2><div class="rounded-xl p-5 mb-4" style="background:#b1eee4"><p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#095049">The Guarantee</p><p class="text-sm font-medium italic" style="color:#095049">"If after 6 months of active enrollment we have not submitted documented dispute activity on your credit file, we will refund every service fee you paid us — and work your file for another 6 months at no charge."</p></div><p class="text-sm leading-relaxed" style="color:#44474c">Conditions: active credit monitoring maintained throughout the service period; client does not take actions that materially damage the credit file during the service period; client remains in active enrollment.</p></div>
+    <div id="ts7"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 07</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Prohibited conduct and client obligations</h2><p class="text-sm leading-relaxed mb-3" style="color:#44474c">You agree not to provide false or misleading information, request that we dispute items you know to be accurate, or use the services for any unlawful purpose. You agree to maintain active credit monitoring, notify us of significant financial changes, and review your portal regularly for dispute updates.</p></div>
+    <div id="ts8"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 08</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Disclaimers and limitations</h2><div class="rounded-xl p-5 mb-4" style="background:#FAEEDA"><p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#854F0B">No Outcome Guarantees</p><p class="text-sm leading-relaxed" style="color:#44474c">Vance Credit does not guarantee any specific credit score improvement, removal of any specific item, or approval for any loan or credit product. Results depend on the specific items on your credit file, how credit bureaus respond to disputes, and factors outside our control.</p></div><p class="text-sm leading-relaxed" style="color:#44474c">To the maximum extent permitted by applicable law, Vance Credit's total liability shall not exceed the total fees you paid in the 12 months preceding the claim.</p></div>
+    <div id="ts9"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 09</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Dispute resolution — arbitration</h2><p class="text-sm leading-relaxed" style="color:#44474c">Any dispute arising from or relating to these Terms shall be resolved by binding arbitration administered by the American Arbitration Association under its Consumer Arbitration Rules, except that either party may bring claims in small claims court if the claim qualifies. <strong style="color:#191c1e">Class action waiver:</strong> You agree that any arbitration shall be conducted in your individual capacity only.</p></div>
+    <div id="ts10"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 10</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Governing law</h2><p class="text-sm leading-relaxed" style="color:#44474c">These Terms are governed by the laws of the State of Wyoming, without regard to conflict of law provisions, except to the extent superseded by applicable federal law (including CROA and the FCRA).</p></div>
+    <div id="ts11"><p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#2b6860">Section 11</p><h2 class="serif text-2xl font-bold mb-5" style="color:#191c1e">Contact</h2><div class="rounded-2xl p-7" style="background:#f2f4f6"><p class="font-bold mb-4" style="color:#191c1e">Vance Credit LLC</p><p class="text-sm mb-2" style="color:#44474c"><strong style="color:#191c1e">Address:</strong> 800 Maine Ave SW, Washington, DC 20024-2805</p><p class="text-sm mb-2" style="color:#44474c"><strong style="color:#191c1e">Email:</strong> <a href="mailto:contact@vancecredit.com" style="color:#0f1c2c">contact@vancecredit.com</a></p><p class="text-sm mb-2" style="color:#44474c"><strong style="color:#191c1e">Phone:</strong> <a href="tel:+15165482623" style="color:#0f1c2c">+1 (516) 548-2623</a></p></div></div>
+  </div>
+</div>
+<footer style="background:#f2f4f6;margin-top:auto">
+  <div class="max-w-7xl mx-auto px-8 py-8 flex flex-wrap justify-between items-center gap-4" style="border-top:1px solid #e5e7eb">
+    <button onclick="showPage('home')" class="serif text-xl font-black" style="color:#0f1c2c">Vance Credit</button>
+    <div class="flex gap-6 flex-wrap">
+      <button onclick="showPage('home')" class="text-sm hover:underline" style="color:#6b7280">Home</button>
+      <button onclick="showPage('signup')" class="text-sm hover:underline" style="color:#6b7280">Get Started</button>
+      <button onclick="showPage('privacy')" class="text-sm hover:underline" style="color:#6b7280">Privacy Policy</button>
+      <button onclick="showPage('terms')" class="text-sm hover:underline" style="color:#6b7280">Terms of Service</button>
+    </div>
+    <p class="w-full text-xs" style="color:#9ca3af">Vance Credit LLC · 800 Maine Ave SW, Washington, DC 20024-2805 · Credit Repair Organization · 15 U.S.C. § 1679 et seq. · © 2026 Vance Credit LLC. All rights reserved.</p>
+  </div>
+</footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════════════ -->
+<script>
+// ── PAGE NAVIGATION ──────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(function(p) {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+  var target = document.getElementById('page-' + name);
+  if (target) {
+    target.classList.add('active');
+    target.style.display = 'flex';
+    target.classList.remove('page-enter');
+    void target.offsetWidth; // force reflow
+    target.classList.add('page-enter');
+  }
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  history.pushState(null, '', '#' + name);
+  // Re-trigger scroll reveals on new page
+  setTimeout(initReveal, 100);
+}
+
+function doScroll(selector) {
+  setTimeout(function() {
+    var el = document.querySelector(selector);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function handleHash() {
+  var hash = window.location.hash.replace('#', '');
+  var valid = ['home', 'signup', 'tools', 'privacy', 'terms'];
+  showPage(valid.indexOf(hash) > -1 ? hash : 'home');
+}
+
+window.addEventListener('popstate', handleHash);
+
+// ── MOBILE MENU ──────────────────────────────────────────────
+function toggleMobileMenu() {
+  var m = document.getElementById('mobileMenu');
+  m.classList.toggle('open');
+}
+function closeMobileMenu() {
+  var m = document.getElementById('mobileMenu');
+  m.classList.remove('open');
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.page').forEach(function(p) { p.style.display = 'none'; });
+  handleHash();
+
+  // Phone formatting
+  var phone = document.getElementById('phone');
+  if (phone) {
+    phone.addEventListener('input', function(e) {
+      var v = e.target.value.replace(/\D/g, '').substring(0, 10);
+      if (v.length >= 6) v = '(' + v.substring(0, 3) + ') ' + v.substring(3, 6) + '-' + v.substring(6);
+      else if (v.length >= 3) v = '(' + v.substring(0, 3) + ') ' + v.substring(3);
+      e.target.value = v;
+    });
+  }
+
+
+
+  // Clear errors on input
+  ['firstName','lastName','email','phone','goal','score'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', function() {
+        showFieldError(id, false);
+        el.classList.remove('err');
+      });
+    }
+  });
+  var tc = document.getElementById('consentTerms');
+  if (tc) tc.addEventListener('change', function() { showFieldError('consentTerms', false); });
+});
+
+// ── FORM VALIDATION ──────────────────────────────────────────
+function showFieldError(id, show) {
+  var el = document.getElementById('err-' + id);
+  if (el) el.classList.toggle('show', show);
+}
+
+function validateForm() {
+  var valid = true;
+  var fields = [
+    { id: 'firstName', check: function(v) { return v.trim().length > 0; } },
+    { id: 'lastName', check: function(v) { return v.trim().length > 0; } },
+    { id: 'email', check: function(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); } },
+    { id: 'phone', check: function(v) { return v.replace(/\D/g, '').length === 10; } },
+    { id: 'goal', check: function(v) { return v !== ''; } },
+    { id: 'score', check: function(v) { return v !== ''; } }
+  ];
+  fields.forEach(function(f) {
+    var el = document.getElementById(f.id);
+    var ok = el && f.check(el.value);
+    showFieldError(f.id, !ok);
+    if (el) el.classList.toggle('err', !ok);
+    if (!ok) valid = false;
+  });
+  var terms = document.getElementById('consentTerms');
+  var tok = terms && terms.checked;
+  showFieldError('consentTerms', !tok);
+  if (terms) terms.classList.toggle('err-c', !tok);
+  if (!tok) valid = false;
+  return valid;
+}
+
+function handleSubmit() {
+  var banner = document.getElementById('errorBanner');
+  if (!validateForm()) {
+    banner.style.display = 'block';
+    banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return;
+  }
+  banner.style.display = 'none';
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>Processing...</span>';
+  var rec = {
+    timestamp: new Date().toISOString(),
+    firstName: document.getElementById('firstName').value,
+    lastName: document.getElementById('lastName').value,
+    email: document.getElementById('email').value,
+    phone: document.getElementById('phone').value,
+    goal: document.getElementById('goal').value,
+    scoreRange: document.getElementById('score').value,
+    consentTerms: document.getElementById('consentTerms').checked,
+    consentSMS: document.getElementById('consentSMS').checked,
+    consentEmail: document.getElementById('consentEmail').checked,
+    smsConsentLanguage: document.getElementById('consentSMS').checked ? 'Checked opt-in — Vance Credit SMS Alerts — automated texts — msg&data rates apply — reply STOP' : 'Did not opt in to SMS',
+    pageUrl: window.location.href,
+    userAgent: navigator.userAgent
+  };
+  console.log('CONSENT RECORD (send to backend for TCPA documentation):', JSON.stringify(rec, null, 2));
+  setTimeout(function() {
+    document.getElementById('formBody').style.display = 'none';
+    var ss = document.getElementById('successState');
+    ss.style.display = 'block';
+    if (rec.consentSMS) document.getElementById('smsConfirmNote').style.display = 'block';
+  }, 1200);
+}
+
+// ── CALCULATORS ──────────────────────────────────────────────
+function calcLoanCost() {
+  var amt = parseFloat(document.getElementById('loanAmount').value) || 30000;
+  var term = parseInt(document.getElementById('loanTerm').value) || 60;
+  var sr = document.getElementById('scoreRange').value;
+  var rates = { subprime: 0.20, nearsubprime: 0.15, nearprime: 0.10, prime: 0.07, superprime: 0.045 };
+  var lbls = { subprime: '~20%', nearsubprime: '~15%', nearprime: '~10%', prime: '~7%', superprime: '~4.5%' };
+  var apr = rates[sr], best = 0.045;
+  function pmt(p, r, n) { var mr = r / 12; return mr === 0 ? p / n : p * (mr * Math.pow(1 + mr, n)) / (Math.pow(1 + mr, n) - 1); }
+  var mo = pmt(amt, apr, term), bmo = pmt(amt, best, term);
+  var tot = mo * term, btot = bmo * term;
+  document.getElementById('res-apr').textContent = lbls[sr];
+  document.getElementById('res-monthly').textContent = '$' + mo.toFixed(0) + '/mo';
+  document.getElementById('res-total').textContent = '$' + tot.toFixed(0);
+  document.getElementById('res-best').textContent = '$' + bmo.toFixed(0) + '/mo · $' + btot.toFixed(0) + ' total';
+  document.getElementById('res-diff').textContent = (tot - btot) > 0 ? '~$' + (tot - btot).toFixed(0) : '$0';
+  document.getElementById('loanResult').classList.add('show');
+}
+
+function calcDTI() {
+  var inc = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+  var debt = parseFloat(document.getElementById('monthlyDebt').value) || 0;
+  var np = parseFloat(document.getElementById('newPayment').value) || 0;
+  if (!inc) return;
+  var dti = ((debt + np) / inc) * 100;
+  document.getElementById('dtiPct').textContent = dti.toFixed(1) + '%';
+  var bar = document.getElementById('dtiBar');
+  var lbl = document.getElementById('dtiLabel');
+  var note = document.getElementById('dtiNote');
+  bar.style.width = Math.min(dti, 100) + '%';
+  if (dti <= 28) {
+    bar.style.background = '#2b6860'; lbl.style.color = '#095049'; lbl.textContent = 'Excellent — well below standard limits';
+    note.textContent = 'Most lenders prefer front-end DTI below 28% and back-end below 36%.';
+  } else if (dti <= 36) {
+    bar.style.background = '#0f1c2c'; lbl.style.color = '#0f1c2c'; lbl.textContent = 'Acceptable — within conventional limits';
+    note.textContent = 'Most conventional lenders accept back-end DTI up to 36–43%.';
+  } else if (dti <= 43) {
+    bar.style.background = '#854F0B'; lbl.style.color = '#854F0B'; lbl.textContent = 'Elevated — at the upper edge of qualification';
+    note.textContent = 'DTI above 36% may limit your loan options. FHA allows up to 43% in some cases.';
+  } else {
+    bar.style.background = '#b91c1c'; lbl.style.color = '#b91c1c'; lbl.textContent = 'High — above most standard qualification limits';
+    note.textContent = 'DTI above 43% makes qualification difficult at most lenders.';
+  }
+  document.getElementById('dtiResult').classList.add('show');
+}
+
+// ── SCROLL REVEAL (IntersectionObserver) ─────────────────────
+function initReveal() {
+  var els = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        // Stagger siblings in same grid
+        var parent = entry.target.parentElement;
+        var siblings = parent ? parent.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale') : [];
+        var idx = Array.from(siblings).indexOf(entry.target);
+        entry.target.style.transitionDelay = (idx * 0.09) + 's';
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+  els.forEach(function(el) { io.observe(el); });
+
+  // Animate factor bars when visible
+  var bars = document.querySelectorAll('.factor-fill[data-width]');
+  var barIO = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var w = entry.target.getAttribute('data-width');
+        setTimeout(function() { entry.target.style.width = w; }, 200);
+        barIO.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  bars.forEach(function(b) { barIO.observe(b); });
+}
+
+// Run on load
+document.addEventListener('DOMContentLoaded', function() { setTimeout(initReveal, 300); });
+window.addEventListener('scroll', function() {}, { passive: true });
+
+function toggleDC(el, type) {
+  el.classList.toggle('selected');
+  var sel = document.querySelectorAll('.dc-chip.selected');
+  var res = document.getElementById('dcResult');
+  if (!sel.length) { res.classList.remove('show'); res.innerHTML = ''; return; }
+  var hasD = false, hasN = false;
+  sel.forEach(function(item) {
+    var fn = item.getAttribute('onclick') || '';
+    if (fn.indexOf('notdisputable') > -1) hasN = true;
+    else hasD = true;
+  });
+  res.classList.add('show');
+  if (hasD && !hasN) {
+    res.style.background = '#b1eee4'; res.style.border = '1px solid rgba(43,104,96,0.25)'; res.style.borderRadius = '12px';
+    res.innerHTML = '<strong style="color:#095049;display:block;margin-bottom:4px">Some items selected may be disputable.</strong><span style="font-size:12px;color:#095049">These types of items are commonly challenged in the credit repair process. A Vance Credit advisor would review each item individually. Get your $1 report to know exactly what\'s on your file.</span>';
+  } else if (!hasD && hasN) {
+    res.style.background = '#fef2f2'; res.style.border = '1px solid rgba(186,26,26,0.25)'; res.style.borderRadius = '12px';
+    res.innerHTML = '<strong style="color:#b91c1c;display:block;margin-bottom:4px">Items selected are typically not disputable.</strong><span style="font-size:12px;color:#b91c1c">Accurate, verified information cannot be removed from your credit report under federal law.</span>';
+  } else {
+    res.style.background = '#d6e4f9'; res.style.border = '1px solid rgba(15,28,44,0.2)'; res.style.borderRadius = '12px';
+    res.innerHTML = '<strong style="color:#0f1c2c;display:block;margin-bottom:4px">Your file has a mix of potentially disputable and non-disputable items.</strong><span style="font-size:12px;color:#0f1c2c">We would only dispute items we genuinely believe are inaccurate. A $1 report review tells you exactly where you stand.</span>';
+  }
+}
+</script>
+</body>
+</html>
